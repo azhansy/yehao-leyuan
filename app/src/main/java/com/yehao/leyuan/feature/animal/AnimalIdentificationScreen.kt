@@ -19,6 +19,11 @@ import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
 import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,7 +52,7 @@ import com.yehao.leyuan.ui.theme.SkyBlue
 import kotlinx.coroutines.delay
 
 @Composable
-fun AnimalIdentificationScreen() {
+fun AnimalIdentificationScreen(onBack: () -> Unit = {}) {
     val audio = LocalAppAudio.current
     val context = LocalContext.current
     var animals by remember { mutableStateOf<List<AnimalItem>>(emptyList()) }
@@ -79,17 +84,41 @@ fun AnimalIdentificationScreen() {
             )
             .padding(vertical = 12.dp)
     ) {
-        Text(
-            text = "动物王国",
-            style = MaterialTheme.typography.displayLarge.merge(
-                TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold)
-            ),
-            fontSize = 38.sp,
-            textAlign = TextAlign.Center,
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp)
-        )
+                .padding(horizontal = 4.dp, vertical = 4.dp),
+        ) {
+            IconButton(
+                onClick = {
+                    audio.playSoftClick()
+                    onBack()
+                },
+                modifier = Modifier.align(Alignment.CenterStart),
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = Color.White.copy(alpha = 0.85f),
+                    contentColor = Color(0xFF5E35B1),
+                ),
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                    contentDescription = "返回",
+                    modifier = Modifier.size(28.dp),
+                )
+            }
+            Text(
+                text = "动物王国",
+                style = MaterialTheme.typography.displayLarge.merge(
+                    TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold),
+                ),
+                fontSize = 38.sp,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .fillMaxWidth()
+                    .padding(horizontal = 56.dp, vertical = 8.dp),
+            )
+        }
 
         Text(
             text = "点一点，听英文名字",

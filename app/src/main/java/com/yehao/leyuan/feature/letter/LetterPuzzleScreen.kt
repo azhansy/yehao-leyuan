@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -74,7 +75,7 @@ private val LetterColors = listOf(CherryRed, SkyBlue, GrassGreen, OrangePop, Pin
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun LetterPuzzleScreen() {
+fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
     val audio = LocalAppAudio.current
     val context = LocalContext.current
     val prefs = remember { LetterPuzzlePrefs(context) }
@@ -195,10 +196,28 @@ fun LetterPuzzleScreen() {
                 IconButton(
                     onClick = {
                         audio.playSoftClick()
-                        showLevelSettings = true
+                        onBack()
                     },
                     enabled = !showGameOver,
                     modifier = Modifier.align(Alignment.CenterStart),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.White.copy(alpha = 0.85f),
+                        contentColor = Color(0xFF37474F)
+                    )
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "返回",
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
+                IconButton(
+                    onClick = {
+                        audio.playSoftClick()
+                        showLevelSettings = true
+                    },
+                    enabled = !showGameOver,
+                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 48.dp),
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = Color.White.copy(alpha = 0.85f),
                         contentColor = Color(0xFF7E57C2)
@@ -219,7 +238,7 @@ fun LetterPuzzleScreen() {
                     textAlign = TextAlign.Center,
                     modifier = Modifier
                         .align(Alignment.Center)
-                        .padding(start = 52.dp, end = 16.dp)
+                        .padding(start = 100.dp, end = 16.dp)
                 )
             }
             Text(

@@ -15,8 +15,13 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -61,7 +66,7 @@ private val Problems = listOf(
 )
 
 @Composable
-fun SimpleMathScreen() {
+fun SimpleMathScreen(onBack: () -> Unit = {}) {
     val audio = LocalAppAudio.current
     var problemIndex by remember { mutableIntStateOf(0) }
     val problem = Problems[problemIndex % Problems.size]
@@ -126,16 +131,43 @@ fun SimpleMathScreen() {
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "解答数学题!",
-                style = MaterialTheme.typography.displayLarge.merge(
-                    TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold)
-                ),
-                fontSize = 40.sp,
-                textAlign = TextAlign.Center
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+            ) {
+                IconButton(
+                    onClick = {
+                        audio.playSoftClick()
+                        onBack()
+                    },
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.White.copy(alpha = 0.9f),
+                        contentColor = Color(0xFFC62828),
+                    ),
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "返回",
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+                Text(
+                    text = "解答数学题!",
+                    style = MaterialTheme.typography.displayLarge.merge(
+                        TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold),
+                    ),
+                    fontSize = 40.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(horizontal = 52.dp),
+                )
+            }
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             Row(
                 verticalAlignment = Alignment.CenterVertically,

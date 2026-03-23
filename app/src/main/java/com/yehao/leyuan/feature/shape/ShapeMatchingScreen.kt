@@ -20,6 +20,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -71,7 +76,7 @@ private enum class ShapeKind(val labelEn: String, val labelZh: String) {
 }
 
 @Composable
-fun ShapeMatchingScreen() {
+fun ShapeMatchingScreen(onBack: () -> Unit = {}) {
     val audio = LocalAppAudio.current
     var layoutRevision by remember { mutableIntStateOf(0) }
     val slotKinds = remember(layoutRevision) { ShapeKind.entries.shuffled() }
@@ -140,14 +145,41 @@ fun ShapeMatchingScreen() {
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "配对形状!",
-                style = MaterialTheme.typography.displayLarge.merge(
-                    TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold)
-                ),
-                fontSize = 40.sp,
-                textAlign = TextAlign.Center
-            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 4.dp),
+            ) {
+                IconButton(
+                    onClick = {
+                        audio.playSoftClick()
+                        onBack()
+                    },
+                    modifier = Modifier.align(Alignment.CenterStart),
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.White.copy(alpha = 0.88f),
+                        contentColor = Color(0xFF3949AB),
+                    ),
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
+                        contentDescription = "返回",
+                        modifier = Modifier.size(28.dp),
+                    )
+                }
+                Text(
+                    text = "配对形状!",
+                    style = MaterialTheme.typography.displayLarge.merge(
+                        TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold),
+                    ),
+                    fontSize = 40.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .fillMaxWidth()
+                        .padding(horizontal = 52.dp),
+                )
+            }
             Text(
                 text = "拖到上面相同轮廓的框里",
                 style = MaterialTheme.typography.bodyLarge,
