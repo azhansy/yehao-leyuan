@@ -1,5 +1,7 @@
 package com.yehao.leyuan.ui
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -17,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -36,11 +39,14 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.yehao.leyuan.BuildConfig
 import com.yehao.leyuan.audio.TtsVoicePrefs
 import com.yehao.leyuan.audio.TtsVoiceProfile
+
+private const val OFFICIAL_WEBSITE = "https://azhansy.github.io/yehao-leyuan/"
 
 @Composable
 fun AboutScreen(onBack: () -> Unit) {
@@ -49,6 +55,14 @@ fun AboutScreen(onBack: () -> Unit) {
     val prefs = remember { TtsVoicePrefs(context) }
     var selected by remember { mutableStateOf(prefs.getProfile()) }
     val scroll = rememberScrollState()
+
+    fun openOfficialSite() {
+        audio.playSoftClick()
+        try {
+            context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(OFFICIAL_WEBSITE)))
+        } catch (_: Exception) {
+        }
+    }
 
     Box(Modifier.fillMaxSize()) {
         Box(
@@ -94,14 +108,56 @@ fun AboutScreen(onBack: () -> Unit) {
                 color = Color(0xFF1565C0),
             )
             Text(
-                text = "版本 ${BuildConfig.VERSION_NAME}（${BuildConfig.VERSION_CODE}）",
+                text = "版本 ${BuildConfig.VERSION_NAME}（构建 ${BuildConfig.VERSION_CODE}）",
                 fontSize = 15.sp,
                 color = Color(0xFF607D8B),
-                modifier = Modifier.padding(top = 6.dp, bottom = 20.dp),
+                modifier = Modifier.padding(top = 6.dp, bottom = 16.dp),
             )
 
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                shape = RoundedCornerShape(16.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.92f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+            ) {
+                Column(Modifier.padding(16.dp)) {
+                    Text(
+                        text = "官方网站",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        color = Color(0xFF78909C),
+                    )
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable(onClick = ::openOfficialSite)
+                            .padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(
+                            text = OFFICIAL_WEBSITE,
+                            fontSize = 15.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = Color(0xFF1565C0),
+                            textDecoration = TextDecoration.Underline,
+                            modifier = Modifier.weight(1f),
+                        )
+                        Icon(
+                            imageVector = Icons.Rounded.OpenInNew,
+                            contentDescription = null,
+                            tint = Color(0xFF1565C0),
+                            modifier = Modifier
+                                .size(20.dp)
+                                .padding(start = 6.dp),
+                        )
+                    }
+                }
+            }
+
             Text(
-                text = "亲子益智小游戏合集。朗读声音若在某些手机上无声或不自然，可在下方切换。",
+                text = "亲子益智小游戏合集。朗读均通过有道词典在线发音（需联网）。",
                 fontSize = 15.sp,
                 lineHeight = 22.sp,
                 color = Color(0xFF455A64),
@@ -109,7 +165,7 @@ fun AboutScreen(onBack: () -> Unit) {
             )
 
             Text(
-                text = "朗读声音",
+                text = "发音口音",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF263238),

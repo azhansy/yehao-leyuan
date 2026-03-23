@@ -19,8 +19,8 @@ android {
         applicationId = "com.yehao.leyuan"
         minSdk = 26
         targetSdk = 35
-        versionCode = 3
-        versionName = "1.1.1"
+        versionCode = 4
+        versionName = "1.1.2"
         ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("arm64-v8a"))

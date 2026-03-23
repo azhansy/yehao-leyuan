@@ -22,15 +22,24 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.DirectionsCar
-import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.Pets
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -135,23 +144,79 @@ fun GameMapHomeScreen(navController: NavController) {
                 .verticalScroll(scroll)
                 .padding(horizontal = 18.dp, vertical = 20.dp),
         ) {
-            Text(
-                text = "烨浩乐园",
-                style = MaterialTheme.typography.displaySmall,
-                fontWeight = FontWeight.Black,
-                color = Color(0xFF1B5E20),
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center,
-            )
-            Text(
-                text = "乐园地图 · 点一块地盘开始玩",
-                fontSize = 16.sp,
-                color = Color(0xFF33691E),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 6.dp, bottom = 18.dp),
-                textAlign = TextAlign.Center,
-            )
+            var menuExpanded by remember { mutableStateOf(false) }
+
+            Box(modifier = Modifier.fillMaxWidth()) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                ) {
+                    Text(
+                        text = "烨浩乐园",
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Black,
+                        color = Color(0xFF1B5E20),
+                        modifier = Modifier.fillMaxWidth(),
+                        textAlign = TextAlign.Center,
+                    )
+                    Text(
+                        text = "乐园地图 · 点一块地盘开始玩",
+                        fontSize = 16.sp,
+                        color = Color(0xFF33691E),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 6.dp),
+                        textAlign = TextAlign.Center,
+                    )
+                }
+
+                Box(modifier = Modifier.align(Alignment.TopEnd)) {
+                    IconButton(
+                        onClick = {
+                            audio.playSoftClick()
+                            menuExpanded = true
+                        },
+                        colors = IconButtonDefaults.iconButtonColors(
+                            containerColor = Color.White.copy(alpha = 0.7f),
+                            contentColor = Color(0xFF37474F),
+                        ),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.MoreVert,
+                            contentDescription = "菜单",
+                            modifier = Modifier.size(26.dp),
+                        )
+                    }
+                    DropdownMenu(
+                        expanded = menuExpanded,
+                        onDismissRequest = { menuExpanded = false },
+                    ) {
+                        DropdownMenuItem(
+                            text = {
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Info,
+                                        contentDescription = null,
+                                        tint = Color(0xFF546E7A),
+                                        modifier = Modifier.size(20.dp),
+                                    )
+                                    Text("关于", fontSize = 15.sp, color = Color(0xFF37474F))
+                                }
+                            },
+                            onClick = {
+                                menuExpanded = false
+                                audio.playSoftClick()
+                                navController.navigate(AppDestinations.About.route)
+                            },
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(18.dp))
 
             AppDestinations.games.forEachIndexed { index, dest ->
                 val style = styleFor(dest)
@@ -167,48 +232,6 @@ fun GameMapHomeScreen(navController: NavController) {
                         navController.navigate(dest.route)
                     },
                 )
-            }
-
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
-                    .clickable {
-                        audio.playSoftClick()
-                        navController.navigate(AppDestinations.About.route)
-                    },
-                shape = RoundedCornerShape(18.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.75f)),
-                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
-            ) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Icon(
-                        imageVector = Icons.Rounded.Info,
-                        contentDescription = null,
-                        tint = Color(0xFF546E7A),
-                    )
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text(
-                            text = "关于与朗读设置",
-                            fontSize = 17.sp,
-                            fontWeight = FontWeight.SemiBold,
-                            color = Color(0xFF37474F),
-                        )
-                        Text(
-                            text = "版本信息 · 切换朗读声音（小米等可试「跟随系统」）",
-                            fontSize = 13.sp,
-                            color = Color(0xFF78909C),
-                            modifier = Modifier.padding(top = 2.dp),
-                        )
-                    }
-                    Text("›", fontSize = 20.sp, color = Color(0xFF90A4AE))
-                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))

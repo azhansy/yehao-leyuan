@@ -293,7 +293,7 @@ fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
                         enabled = !showGameOver
                     ) {
                         audio.playSoftClick()
-                        audio.speak(word.lowercase())
+                        audio.speakAnimal(word)
                     }
             )
             Text(

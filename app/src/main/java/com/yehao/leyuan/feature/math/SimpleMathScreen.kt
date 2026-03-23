@@ -58,6 +58,20 @@ private data class MathProblem(val left: Int, val right: Int, val add: Boolean) 
     val answer: Int get() = if (add) left + right else left - right
 }
 
+private fun digitToEnglish(digit: Int): String = when (digit) {
+    0 -> "zero"
+    1 -> "one"
+    2 -> "two"
+    3 -> "three"
+    4 -> "four"
+    5 -> "five"
+    6 -> "six"
+    7 -> "seven"
+    8 -> "eight"
+    9 -> "nine"
+    else -> digit.toString()
+}
+
 private val Problems = listOf(
     MathProblem(2, 3, true),
     MathProblem(1, 4, true),
@@ -89,6 +103,7 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
         val d = slotDigit
         if (d == null) {
             feedback = "把数字拖到问号框里哦"
+            audio.speak("put a number in the box", append = true)
             return
         }
         if (d == problem.answer) {
@@ -96,13 +111,13 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
             showReward = true
             audio.playSuccess()
             audio.speakVictoryPraise(
-                append = false,
+                append = true,
                 leadIn = "That's the right answer! You counted so well! Great math!"
             )
         } else {
             feedback = "再试一次"
             audio.playTryAgain()
-            audio.speak("Try again")
+            audio.speak("Try again", append = true)
         }
     }
 
@@ -141,6 +156,7 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
                 IconButton(
                     onClick = {
                         audio.playSoftClick()
+                        audio.speak("back")
                         onBack()
                     },
                     modifier = Modifier.align(Alignment.CenterStart),
@@ -246,6 +262,7 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
                                                 dragDigit = digit
                                                 dragOffset = Offset.Zero
                                                 audio.playSoftClick()
+                                                audio.speak(digitToEnglish(digit))
                                             },
                                             onDrag = { change, amount ->
                                                 change.consume()
@@ -281,7 +298,11 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
             Spacer(modifier = Modifier.height(24.dp))
 
             Button(
-                onClick = { submit() },
+                onClick = {
+                    audio.playSoftClick()
+                    audio.speak("submit")
+                    submit()
+                },
                 modifier = Modifier
                     .widthIn(min = 200.dp)
                     .fillMaxWidth(0.85f)
@@ -313,6 +334,8 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
             ) {
                 Button(
                     onClick = {
+                        audio.playSoftClick()
+                        audio.speak("next question")
                         problemIndex = (problemIndex + 1) % Problems.size
                         slotDigit = null
                         feedback = null
@@ -324,6 +347,8 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
                 }
                 Button(
                     onClick = {
+                        audio.playSoftClick()
+                        audio.speak("clear")
                         slotDigit = null
                         feedback = null
                         showReward = false

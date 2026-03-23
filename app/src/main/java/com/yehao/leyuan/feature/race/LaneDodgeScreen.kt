@@ -176,6 +176,7 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
         if (playerLane > 0) {
             playerLane--
             audio.playSoftClick()
+            audio.speak("left")
         }
     }
 
@@ -184,6 +185,7 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
         if (playerLane < 2) {
             playerLane++
             audio.playSoftClick()
+            audio.speak("right")
         }
     }
 
@@ -399,9 +401,17 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
                 ),
                 shape = RoundedCornerShape(16.dp),
             ) {
-                Icon(Icons.Rounded.ChevronLeft, contentDescription = "左")
+                Icon(Icons.Rounded.ChevronLeft, contentDescription = "左 Left")
                 Spacer(Modifier.size(8.dp))
-                Text("左", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("左", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        "Left",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.92f),
+                    )
+                }
             }
             Button(
                 onClick = { moveRight() },
@@ -415,9 +425,17 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
                 ),
                 shape = RoundedCornerShape(16.dp),
             ) {
-                Text("右", fontSize = 18.sp, fontWeight = FontWeight.Bold)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    Text("右", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        "Right",
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.92f),
+                    )
+                }
                 Spacer(Modifier.size(8.dp))
-                Icon(Icons.Rounded.ChevronRight, contentDescription = "右")
+                Icon(Icons.Rounded.ChevronRight, contentDescription = "右 Right")
             }
         }
         }
