@@ -7,6 +7,7 @@ sealed class AppDestinations(val route: String, val label: String) {
     data object Shapes : AppDestinations("shapes", "形状配对")
     data object Math : AppDestinations("math", "数学题")
     data object Racing : AppDestinations("racing", "赛车")
+    data object About : AppDestinations("about", "关于")
 
     companion object {
         /** 首页地图上的游戏入口（顺序即展示顺序） */

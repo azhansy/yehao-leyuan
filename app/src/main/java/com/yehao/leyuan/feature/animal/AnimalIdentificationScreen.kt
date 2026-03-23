@@ -75,17 +75,22 @@ fun AnimalIdentificationScreen(onBack: () -> Unit = {}) {
         listOf(GrapePurple, CherryRed, SkyBlue, GrassGreen)
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xFFF3E5F5), Color(0xFFE8F5E9))
-                )
-            )
-            .padding(vertical = 12.dp)
-    ) {
+    Box(Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFFF3E5F5), Color(0xFFE8F5E9)),
+                    ),
+                ),
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding()
+                .padding(vertical = 12.dp),
+        ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -232,6 +237,7 @@ fun AnimalIdentificationScreen(onBack: () -> Unit = {}) {
                     }
                 }
             }
+        }
         }
     }
 }

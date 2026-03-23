@@ -187,16 +187,21 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .statusBarsPadding()
-            .background(
-                Brush.verticalGradient(
-                    listOf(Color(0xFFE1F5FE), Color(0xFFB3E5FC)),
+    Box(Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFFE1F5FE), Color(0xFFB3E5FC)),
+                    ),
                 ),
-            ),
-    ) {
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .statusBarsPadding(),
+        ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -414,6 +419,7 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
                 Spacer(Modifier.size(8.dp))
                 Icon(Icons.Rounded.ChevronRight, contentDescription = "右")
             }
+        }
         }
     }
 

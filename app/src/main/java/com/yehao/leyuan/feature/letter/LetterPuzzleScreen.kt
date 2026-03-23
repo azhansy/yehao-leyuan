@@ -178,17 +178,21 @@ fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            Modifier
+                .fillMaxSize()
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFFFFFDE7), Color(0xFFE1F5FE)),
+                    ),
+                ),
+        )
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color(0xFFFFFDE7), Color(0xFFE1F5FE))
-                    )
-                )
                 .padding(horizontal = 16.dp, vertical = 12.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Box(
                 modifier = Modifier

@@ -49,6 +49,9 @@ fun YehaoLeyuanApp() {
             composable(AppDestinations.Racing.route) {
                 LaneDodgeScreen(onBack = { navController.popBackStack() })
             }
+            composable(AppDestinations.About.route) {
+                AboutScreen(onBack = { navController.popBackStack() })
+            }
         }
         AppUpdateOverlay()
     }

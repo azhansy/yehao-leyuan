@@ -21,18 +21,25 @@ private fun Voice.safeGender(): Int? =
 
 class AppAudio(context: Context) : TextToSpeech.OnInitListener {
     private val appContext = context.applicationContext
+    private val ttsPrefs = TtsVoicePrefs(appContext)
     private var tts: TextToSpeech? = TextToSpeech(appContext, this)
     private val audioManager = appContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
-    /** 部分机型（如部分小米）STREAM_MUSIC 下 ToneGenerator 无声，多备一路 */
     private val toneMusic = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
     private val toneNotification = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
     private var ttsReady = false
 
-    private val speechLocale: Locale = Locale.UK
+    private var currentProfile: TtsVoiceProfile = ttsPrefs.getProfile()
+
+    private fun wordReadingLocale(): Locale = when (currentProfile) {
+        TtsVoiceProfile.SYSTEM_DEFAULT -> Locale.getDefault()
+        TtsVoiceProfile.ENGLISH_UK_FEMALE -> Locale.UK
+        TtsVoiceProfile.ENGLISH_US -> Locale.US
+    }
 
     override fun onInit(status: Int) {
         if (status != TextToSpeech.SUCCESS) return
         val engine = tts ?: return
+        currentProfile = ttsPrefs.getProfile()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             engine.setAudioAttributes(
                 AudioAttributes.Builder()
@@ -41,17 +48,53 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
                     .build(),
             )
         }
-        var langOk = engine.setLanguage(speechLocale)
-        if (langOk < TextToSpeech.LANG_AVAILABLE) {
-            langOk = engine.setLanguage(Locale.US)
-        }
-        if (langOk < TextToSpeech.LANG_AVAILABLE) {
-            engine.language = Locale.getDefault()
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            pickBritishFemaleVoice(engine)
-        }
+        configureEngineForProfile(engine)
         ttsReady = true
+    }
+
+    fun applyVoiceProfile(profile: TtsVoiceProfile) {
+        ttsPrefs.setProfile(profile)
+        currentProfile = profile
+        val engine = tts ?: return
+        if (!ttsReady) return
+        engine.stop()
+        configureEngineForProfile(engine)
+    }
+
+    private fun configureEngineForProfile(engine: TextToSpeech) {
+        when (currentProfile) {
+            TtsVoiceProfile.SYSTEM_DEFAULT -> {
+                var ok = engine.setLanguage(Locale.getDefault())
+                if (ok < TextToSpeech.LANG_AVAILABLE) {
+                    ok = engine.setLanguage(Locale.CHINESE)
+                }
+                if (ok < TextToSpeech.LANG_AVAILABLE) {
+                    ok = engine.setLanguage(Locale.US)
+                }
+                if (ok < TextToSpeech.LANG_AVAILABLE) {
+                    engine.language = Locale.getDefault()
+                }
+                // 不强制 setVoice，交给系统默认引擎与音色（小米等更兼容）
+            }
+            TtsVoiceProfile.ENGLISH_UK_FEMALE -> {
+                var ok = engine.setLanguage(Locale.UK)
+                if (ok < TextToSpeech.LANG_AVAILABLE) {
+                    engine.setLanguage(Locale.US)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    pickBritishFemaleVoice(engine)
+                }
+            }
+            TtsVoiceProfile.ENGLISH_US -> {
+                var ok = engine.setLanguage(Locale.US)
+                if (ok < TextToSpeech.LANG_AVAILABLE) {
+                    engine.setLanguage(Locale.UK)
+                }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    pickAmericanFemaleVoice(engine)
+                }
+            }
+        }
     }
 
     private fun pickBritishFemaleVoice(engine: TextToSpeech) {
@@ -75,6 +118,27 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
         preferred?.let { engine.setVoice(it) }
     }
 
+    private fun pickAmericanFemaleVoice(engine: TextToSpeech) {
+        val voices = engine.voices ?: return
+        fun isUsEnglish(v: Voice): Boolean {
+            val l = v.locale
+            if (l.language != "en") return false
+            return l.country.equals("US", ignoreCase = true) ||
+                l.toLanguageTag().equals("en-us", ignoreCase = true)
+        }
+        val us = voices.filter(::isUsEnglish)
+        if (us.isEmpty()) return
+        val female = us.filter { it.safeGender() == VOICE_GENDER_FEMALE }
+        val byName = us.filter { v ->
+            val n = v.name.lowercase()
+            n.contains("female") || n.contains("#female") || n.contains("-f-")
+        }
+        val preferred = female.maxByOrNull { it.quality }
+            ?: byName.maxByOrNull { it.quality }
+            ?: us.maxByOrNull { it.quality }
+        preferred?.let { engine.setVoice(it) }
+    }
+
     fun speak(text: String) {
         if (!ttsReady) return
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, text.hashCode().toString())
@@ -89,12 +153,10 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
         tts?.speak(letter, TextToSpeech.QUEUE_FLUSH, null, "drag_$letter")
     }
 
-    /**
-     * 拼词完成后朗读单词；必须用 FLUSH 作为首段，否则部分机型上 QUEUE_ADD 在队列为空时不播放。
-     */
     fun speakLettersThenWord(word: String) {
         if (!ttsReady) return
-        val whole = word.lowercase(speechLocale).filter { it.isLetter() }.ifEmpty { word.lowercase(speechLocale) }
+        val loc = wordReadingLocale()
+        val whole = word.lowercase(loc).filter { it.isLetter() }.ifEmpty { word.lowercase(loc) }
         tts?.speak(whole, TextToSpeech.QUEUE_FLUSH, null, "puzzle_word")
     }
 

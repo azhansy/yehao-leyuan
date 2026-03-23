@@ -22,6 +22,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.DirectionsCar
+import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Pets
 import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material3.Card
@@ -167,6 +168,49 @@ fun GameMapHomeScreen(navController: NavController) {
                     },
                 )
             }
+
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 4.dp)
+                    .clickable {
+                        audio.playSoftClick()
+                        navController.navigate(AppDestinations.About.route)
+                    },
+                shape = RoundedCornerShape(18.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.75f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Icon(
+                        imageVector = Icons.Rounded.Info,
+                        contentDescription = null,
+                        tint = Color(0xFF546E7A),
+                    )
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "关于与朗读设置",
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color(0xFF37474F),
+                        )
+                        Text(
+                            text = "版本信息 · 切换朗读声音（小米等可试「跟随系统」）",
+                            fontSize = 13.sp,
+                            color = Color(0xFF78909C),
+                            modifier = Modifier.padding(top = 2.dp),
+                        )
+                    }
+                    Text("›", fontSize = 20.sp, color = Color(0xFF90A4AE))
+                }
+            }
+
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
