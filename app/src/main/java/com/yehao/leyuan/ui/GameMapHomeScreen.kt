@@ -23,6 +23,7 @@ import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.MoreVert
+import androidx.compose.material.icons.rounded.LocalFlorist
 import androidx.compose.material.icons.rounded.Pets
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.TextFields
@@ -74,6 +75,12 @@ private fun styleFor(dest: AppDestinations): SpotStyle = when (dest) {
         blurb = "点点小动物听英文名",
         icon = Icons.Rounded.Pets,
         gradient = listOf(Color(0xFF66BB6A), Color(0xFF43A047)),
+    )
+    AppDestinations.Plants -> SpotStyle(
+        emoji = "🌿",
+        blurb = "点点植物听英文名",
+        icon = Icons.Rounded.LocalFlorist,
+        gradient = listOf(Color(0xFF43A047), Color(0xFF2E7D32)),
     )
     AppDestinations.Shapes -> SpotStyle(
         emoji = "⭐",

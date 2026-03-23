@@ -1,0 +1,578 @@
+[
+  {
+    "emoji": "🐶",
+    "english": "Dog",
+    "chinese": "狗",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "🐱",
+    "english": "Cat",
+    "chinese": "猫",
+    "tint": "#FFFF8A65"
+  },
+  {
+    "emoji": "🐭",
+    "english": "Mouse",
+    "chinese": "老鼠",
+    "tint": "#FF90A4AE"
+  },
+  {
+    "emoji": "🐹",
+    "english": "Hamster",
+    "chinese": "仓鼠",
+    "tint": "#FFFFCC80"
+  },
+  {
+    "emoji": "🐰",
+    "english": "Rabbit",
+    "chinese": "兔子",
+    "tint": "#FFEF9A9A"
+  },
+  {
+    "emoji": "🦊",
+    "english": "Fox",
+    "chinese": "狐狸",
+    "tint": "#FFFF7043"
+  },
+  {
+    "emoji": "🐻",
+    "english": "Bear",
+    "chinese": "熊",
+    "tint": "#FFA1887F"
+  },
+  {
+    "emoji": "🐼",
+    "english": "Panda",
+    "chinese": "熊猫",
+    "tint": "#FF263238"
+  },
+  {
+    "emoji": "🐨",
+    "english": "Koala",
+    "chinese": "考拉",
+    "tint": "#FF78909C"
+  },
+  {
+    "emoji": "🐯",
+    "english": "Tiger",
+    "chinese": "老虎",
+    "tint": "#FFFFB74D"
+  },
+  {
+    "emoji": "🦁",
+    "english": "Lion",
+    "chinese": "狮子",
+    "tint": "#FFFFA726"
+  },
+  {
+    "emoji": "🐮",
+    "english": "Cow",
+    "chinese": "奶牛",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🐷",
+    "english": "Pig",
+    "chinese": "猪",
+    "tint": "#FFF48FB1"
+  },
+  {
+    "emoji": "🐸",
+    "english": "Frog",
+    "chinese": "青蛙",
+    "tint": "#FF66BB6A"
+  },
+  {
+    "emoji": "🐵",
+    "english": "Monkey",
+    "chinese": "猴子",
+    "tint": "#FFBCAAA4"
+  },
+  {
+    "emoji": "🐔",
+    "english": "Chicken",
+    "chinese": "鸡",
+    "tint": "#FFFFAB91"
+  },
+  {
+    "emoji": "🐧",
+    "english": "Penguin",
+    "chinese": "企鹅",
+    "tint": "#FF455A64"
+  },
+  {
+    "emoji": "🐦",
+    "english": "Bird",
+    "chinese": "鸟",
+    "tint": "#FF4FC3F7"
+  },
+  {
+    "emoji": "🐤",
+    "english": "Chick",
+    "chinese": "小鸡",
+    "tint": "#FFFFF176"
+  },
+  {
+    "emoji": "🦆",
+    "english": "Duck",
+    "chinese": "鸭子",
+    "tint": "#FF4DB6AC"
+  },
+  {
+    "emoji": "🦅",
+    "english": "Eagle",
+    "chinese": "老鹰",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "🦉",
+    "english": "Owl",
+    "chinese": "猫头鹰",
+    "tint": "#FF795548"
+  },
+  {
+    "emoji": "🦇",
+    "english": "Bat",
+    "chinese": "蝙蝠",
+    "tint": "#FF424242"
+  },
+  {
+    "emoji": "🐺",
+    "english": "Wolf",
+    "chinese": "狼",
+    "tint": "#FF607D8B"
+  },
+  {
+    "emoji": "🐗",
+    "english": "Boar",
+    "chinese": "野猪",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🐴",
+    "english": "Horse",
+    "chinese": "马",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "🦄",
+    "english": "Unicorn",
+    "chinese": "独角兽",
+    "tint": "#FFCE93D8"
+  },
+  {
+    "emoji": "🐝",
+    "english": "Bee",
+    "chinese": "蜜蜂",
+    "tint": "#FFFFD54F"
+  },
+  {
+    "emoji": "🐛",
+    "english": "Bug",
+    "chinese": "虫子",
+    "tint": "#FFA5D6A7"
+  },
+  {
+    "emoji": "🦋",
+    "english": "Butterfly",
+    "chinese": "蝴蝶",
+    "tint": "#FF80DEEA"
+  },
+  {
+    "emoji": "🐌",
+    "english": "Snail",
+    "chinese": "蜗牛",
+    "tint": "#FFBCAAA4"
+  },
+  {
+    "emoji": "🐙",
+    "english": "Octopus",
+    "chinese": "章鱼",
+    "tint": "#FFEF5350"
+  },
+  {
+    "emoji": "🦀",
+    "english": "Crab",
+    "chinese": "螃蟹",
+    "tint": "#FFE57373"
+  },
+  {
+    "emoji": "🐠",
+    "english": "Fish",
+    "chinese": "鱼",
+    "tint": "#FF4FC3F7"
+  },
+  {
+    "emoji": "🐬",
+    "english": "Dolphin",
+    "chinese": "海豚",
+    "tint": "#FF29B6F6"
+  },
+  {
+    "emoji": "🐳",
+    "english": "Whale",
+    "chinese": "鲸鱼",
+    "tint": "#FF0288D1"
+  },
+  {
+    "emoji": "🦈",
+    "english": "Shark",
+    "chinese": "鲨鱼",
+    "tint": "#FF546E7A"
+  },
+  {
+    "emoji": "🐊",
+    "english": "Crocodile",
+    "chinese": "鳄鱼",
+    "tint": "#FF2E7D32"
+  },
+  {
+    "emoji": "🐢",
+    "english": "Turtle",
+    "chinese": "乌龟",
+    "tint": "#FF66BB6A"
+  },
+  {
+    "emoji": "🐍",
+    "english": "Snake",
+    "chinese": "蛇",
+    "tint": "#FF43A047"
+  },
+  {
+    "emoji": "🦎",
+    "english": "Lizard",
+    "chinese": "蜥蜴",
+    "tint": "#FF8BC34A"
+  },
+  {
+    "emoji": "🦂",
+    "english": "Scorpion",
+    "chinese": "蝎子",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "🦑",
+    "english": "Squid",
+    "chinese": "鱿鱼",
+    "tint": "#FFAB47BC"
+  },
+  {
+    "emoji": "🐘",
+    "english": "Elephant",
+    "chinese": "大象",
+    "tint": "#FF90A4AE"
+  },
+  {
+    "emoji": "🦏",
+    "english": "Rhino",
+    "chinese": "犀牛",
+    "tint": "#FF757575"
+  },
+  {
+    "emoji": "🦒",
+    "english": "Giraffe",
+    "chinese": "长颈鹿",
+    "tint": "#FFFFB74D"
+  },
+  {
+    "emoji": "🦘",
+    "english": "Kangaroo",
+    "chinese": "袋鼠",
+    "tint": "#FFA1887F"
+  },
+  {
+    "emoji": "🐑",
+    "english": "Sheep",
+    "chinese": "绵羊",
+    "tint": "#FFE0E0E0"
+  },
+  {
+    "emoji": "🐐",
+    "english": "Goat",
+    "chinese": "山羊",
+    "tint": "#FFBCAAA4"
+  },
+  {
+    "emoji": "🐪",
+    "english": "Camel",
+    "chinese": "骆驼",
+    "tint": "#FFD7CCC8"
+  },
+  {
+    "emoji": "🦌",
+    "english": "Deer",
+    "chinese": "鹿",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "🦛",
+    "english": "Hippo",
+    "chinese": "河马",
+    "tint": "#FF5C6BC0"
+  },
+  {
+    "emoji": "🦍",
+    "english": "Gorilla",
+    "chinese": "大猩猩",
+    "tint": "#FF424242"
+  },
+  {
+    "emoji": "🦧",
+    "english": "Orangutan",
+    "chinese": "猩猩",
+    "tint": "#FFFF8F00"
+  },
+  {
+    "emoji": "🫎",
+    "english": "Moose",
+    "chinese": "驼鹿",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🦬",
+    "english": "Bison",
+    "chinese": "野牛",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "🦦",
+    "english": "Otter",
+    "chinese": "水獭",
+    "tint": "#FF546E7A"
+  },
+  {
+    "emoji": "🦨",
+    "english": "Skunk",
+    "chinese": "臭鼬",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "🦝",
+    "english": "Raccoon",
+    "chinese": "浣熊",
+    "tint": "#FF78909C"
+  },
+  {
+    "emoji": "🦙",
+    "english": "Llama",
+    "chinese": "羊驼",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "🦚",
+    "english": "Peacock",
+    "chinese": "孔雀",
+    "tint": "#FF00897B"
+  },
+  {
+    "emoji": "🦢",
+    "english": "Swan",
+    "chinese": "天鹅",
+    "tint": "#FFECEFF1"
+  },
+  {
+    "emoji": "🦜",
+    "english": "Parrot",
+    "chinese": "鹦鹉",
+    "tint": "#FF00C853"
+  },
+  {
+    "emoji": "🦞",
+    "english": "Lobster",
+    "chinese": "龙虾",
+    "tint": "#FFE53935"
+  },
+  {
+    "emoji": "🦐",
+    "english": "Shrimp",
+    "chinese": "虾",
+    "tint": "#FFFF7043"
+  },
+  {
+    "emoji": "🪰",
+    "english": "Fly",
+    "chinese": "苍蝇",
+    "tint": "#FF757575"
+  },
+  {
+    "emoji": "🪱",
+    "english": "Worm",
+    "chinese": "蠕虫",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "🦫",
+    "english": "Beaver",
+    "chinese": "河狸",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🦥",
+    "english": "Sloth",
+    "chinese": "树懒",
+    "tint": "#FF8BC34A"
+  },
+  {
+    "emoji": "🦡",
+    "english": "Badger",
+    "chinese": "獾",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "🦃",
+    "english": "Turkey",
+    "chinese": "火鸡",
+    "tint": "#FF795548"
+  },
+  {
+    "emoji": "🐓",
+    "english": "Rooster",
+    "chinese": "公鸡",
+    "tint": "#FFE65100"
+  },
+  {
+    "emoji": "🫏",
+    "english": "Donkey",
+    "chinese": "驴",
+    "tint": "#FF90A4AE"
+  },
+  {
+    "emoji": "🐂",
+    "english": "Ox",
+    "chinese": "公牛",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "🐃",
+    "english": "Buffalo",
+    "chinese": "水牛",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "🐆",
+    "english": "Leopard",
+    "chinese": "豹",
+    "tint": "#FFFFA000"
+  },
+  {
+    "emoji": "🦓",
+    "english": "Zebra",
+    "chinese": "斑马",
+    "tint": "#FFF5F5F5"
+  },
+  {
+    "emoji": "🦔",
+    "english": "Hedgehog",
+    "chinese": "刺猬",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🦤",
+    "english": "Dodo",
+    "chinese": "渡渡鸟",
+    "tint": "#FF795548"
+  },
+  {
+    "emoji": "🦩",
+    "english": "Flamingo",
+    "chinese": "火烈鸟",
+    "tint": "#FFEC407A"
+  },
+  {
+    "emoji": "🦭",
+    "english": "Seal",
+    "chinese": "海豹",
+    "tint": "#FF607D8B"
+  },
+  {
+    "emoji": "🐡",
+    "english": "Blowfish",
+    "chinese": "河豚",
+    "tint": "#FFFFB74D"
+  },
+  {
+    "emoji": "🐦‍⬛",
+    "english": "Crow",
+    "chinese": "乌鸦",
+    "tint": "#FF212121"
+  },
+  {
+    "emoji": "🪶",
+    "english": "Raven",
+    "chinese": "渡鸦",
+    "tint": "#FF424242"
+  },
+  {
+    "emoji": "🕊️",
+    "english": "Dove",
+    "chinese": "斑鸠",
+    "tint": "#FFB0BEC5"
+  },
+  {
+    "emoji": "🐕",
+    "english": "Jackal",
+    "chinese": "胡狼",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🐒",
+    "english": "Lemur",
+    "chinese": "狐猴",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "🪲",
+    "english": "Beetle",
+    "chinese": "甲虫",
+    "tint": "#FF33691E"
+  },
+  {
+    "emoji": "🐜",
+    "english": "Ant",
+    "chinese": "蚂蚁",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "🕷️",
+    "english": "Spider",
+    "chinese": "蜘蛛",
+    "tint": "#FF212121"
+  },
+  {
+    "emoji": "🦗",
+    "english": "Grasshopper",
+    "chinese": "蚱蜢",
+    "tint": "#FF689F38"
+  },
+  {
+    "emoji": "🐞",
+    "english": "Ladybug",
+    "chinese": "瓢虫",
+    "tint": "#FFE53935"
+  },
+  {
+    "emoji": "🪳",
+    "english": "Cockroach",
+    "chinese": "蟑螂",
+    "tint": "#FF795548"
+  },
+  {
+    "emoji": "🐟",
+    "english": "Salmon",
+    "chinese": "鲑鱼",
+    "tint": "#FFE57373"
+  },
+  {
+    "emoji": "🐋",
+    "english": "Narwhal",
+    "chinese": "独角鲸",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "🐚",
+    "english": "Conch",
+    "chinese": "海螺",
+    "tint": "#FFFFAB91"
+  }
+]
