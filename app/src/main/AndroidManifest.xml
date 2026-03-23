@@ -2,8 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- 网络：访问互联网、检测 Wi‑Fi/蜂窝（更新检查、仅 Wi‑Fi 下载等） -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 安装 APK：应用内更新下载后调起安装（需用户在系统里允许「安装未知应用」） -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <!-- 不读取短信；若依赖库合并了短信权限则强制移除 -->
