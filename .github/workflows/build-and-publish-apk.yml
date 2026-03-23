@@ -1,0 +1,83 @@
+# Builds release APK, writes update.json (versionCode + apkFileName), deploys to gh-pages.
+# Enable GitHub Pages: Settings → Pages → Source = Deploy from branch → gh-pages / root.
+# OTA JSON/APK: https://azhansy.github.io/yehao-leyuan/update.json (after Pages + workflow deploy)
+#
+# Signing on CI: add repo secrets KEYSTORE_BASE64 (base64 of app/key.keystore), KEY_ALIAS,
+# KEYSTORE_PASSWORD, KEY_PASSWORD. If unset, build falls back to debug keystore.
+
+name: Build and publish APK
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - "app/**"
+      - "gradle/**"
+      - "build.gradle.kts"
+      - "settings.gradle.kts"
+      - "gradle.properties"
+      - ".github/workflows/build-and-publish-apk.yml"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Configure release signing (from GitHub Secrets)
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ] && [ -n "$KEY_ALIAS" ] && [ -n "$KEYSTORE_PASSWORD" ] && [ -n "$KEY_PASSWORD" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > app/key.keystore
+            {
+              echo "storeFile=app/key.keystore"
+              echo "keyAlias=$KEY_ALIAS"
+              echo "storePassword=$KEYSTORE_PASSWORD"
+              echo "keyPassword=$KEY_PASSWORD"
+            } > key.properties
+          fi
+
+      - name: Assemble release APK
+        run: ./gradlew :app:assembleRelease --no-daemon
+
+      - name: Prepare deploy folder
+        run: |
+          set -euo pipefail
+          VERSION_CODE=$(grep -E "^\s*versionCode\s*=" app/build.gradle.kts | head -1 | sed 's/.*versionCode *= *\([0-9]*\).*/\1/')
+          VERSION_NAME=$(grep -E "^\s*versionName\s*=" app/build.gradle.kts | head -1 | sed 's/.*versionName *= *"\([^"]*\)".*/\1/')
+          APK_BASENAME="yehao-leyuan-${VERSION_NAME}-${VERSION_CODE}"
+          mkdir -p deploy
+          cp "app/build/outputs/apk/release/app-release.apk" "deploy/${APK_BASENAME}.apk"
+          jq -n \
+            --argjson versionCode "$VERSION_CODE" \
+            --arg versionName "$VERSION_NAME" \
+            --arg apkFileName "${APK_BASENAME}.apk" \
+            '{versionCode: $versionCode, versionName: $versionName, apkFileName: $apkFileName}' \
+            > deploy/update.json
+          echo "Published metadata:"
+          cat deploy/update.json
+
+      - name: Deploy to GitHub Pages (gh-pages)
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: deploy
+          clean: true
