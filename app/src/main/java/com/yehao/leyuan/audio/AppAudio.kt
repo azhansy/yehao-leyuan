@@ -1,6 +1,7 @@
 package com.yehao.leyuan.audio
 
 import android.content.Context
+import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.ToneGenerator
 import android.os.Build
@@ -21,18 +22,31 @@ private fun Voice.safeGender(): Int? =
 class AppAudio(context: Context) : TextToSpeech.OnInitListener {
     private val appContext = context.applicationContext
     private var tts: TextToSpeech? = TextToSpeech(appContext, this)
-    private val tone = ToneGenerator(AudioManager.STREAM_MUSIC, 85)
+    private val audioManager = appContext.getSystemService(Context.AUDIO_SERVICE) as AudioManager
+    /** 部分机型（如部分小米）STREAM_MUSIC 下 ToneGenerator 无声，多备一路 */
+    private val toneMusic = ToneGenerator(AudioManager.STREAM_MUSIC, 100)
+    private val toneNotification = ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100)
     private var ttsReady = false
 
-    /** British English locale for TTS and string casing. */
     private val speechLocale: Locale = Locale.UK
 
     override fun onInit(status: Int) {
         if (status != TextToSpeech.SUCCESS) return
         val engine = tts ?: return
-        val langOk = engine.setLanguage(speechLocale)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            engine.setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_ASSISTANT)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build(),
+            )
+        }
+        var langOk = engine.setLanguage(speechLocale)
         if (langOk < TextToSpeech.LANG_AVAILABLE) {
-            engine.language = speechLocale
+            langOk = engine.setLanguage(Locale.US)
+        }
+        if (langOk < TextToSpeech.LANG_AVAILABLE) {
+            engine.language = Locale.getDefault()
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             pickBritishFemaleVoice(engine)
@@ -40,10 +54,6 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
         ttsReady = true
     }
 
-    /**
-     * Prefer an en-GB voice marked female (Google / device engines on API 28+).
-     * Falls back to any en-GB voice, then leaves [setLanguage] default.
-     */
     private fun pickBritishFemaleVoice(engine: TextToSpeech) {
         val voices = engine.voices ?: return
         fun isBritishEnglish(v: Voice): Boolean {
@@ -70,51 +80,33 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
         tts?.speak(text, TextToSpeech.QUEUE_FLUSH, null, text.hashCode().toString())
     }
 
-    /** Single letter while dragging (letter name, e.g. "C"). */
     fun speakDraggingLetter(char: Char) {
-        if (!ttsReady) return
         val letter = char.uppercaseChar().toString()
+        if (!ttsReady) {
+            playSoftClick()
+            return
+        }
         tts?.speak(letter, TextToSpeech.QUEUE_FLUSH, null, "drag_$letter")
     }
 
     /**
-     * After puzzle complete: read each letter then the whole word, e.g. C → A → T → "cat".
+     * 拼词完成后朗读单词；必须用 FLUSH 作为首段，否则部分机型上 QUEUE_ADD 在队列为空时不播放。
      */
     fun speakLettersThenWord(word: String) {
         if (!ttsReady) return
-//        val upper = word.uppercase(speechLocale).filter { it.isLetter() }
-//        if (upper.isEmpty()) return
-//        tts?.speak(upper.first().toString(), TextToSpeech.QUEUE_FLUSH, null, "puzzle_0")
-//        for (i in 1 until upper.length) {
-//            tts?.speak(upper[i].toString(), TextToSpeech.QUEUE_ADD, null, "puzzle_$i")
-//        }
         val whole = word.lowercase(speechLocale).filter { it.isLetter() }.ifEmpty { word.lowercase(speechLocale) }
-        tts?.speak(whole, TextToSpeech.QUEUE_ADD, null, "puzzle_word")
+        tts?.speak(whole, TextToSpeech.QUEUE_FLUSH, null, "puzzle_word")
     }
 
     fun speakAnimal(englishName: String) {
         speak(englishName)
     }
 
-    /**
-     * Encouraging English lines after a win.
-     * @param append If true, all lines use [QUEUE_ADD] (e.g. after [speakLettersThenWord]).
-     * @param leadIn Optional extra English sentence spoken first (still respects [append] for queue mode).
-     */
     fun speakVictoryPraise(append: Boolean = false, leadIn: String? = null) {
         if (!ttsReady) return
         val body = listOf(
             "You are so great!",
             "I am super proud of you!",
-//
-//            "You're awesome!",
-//            "Wonderful job!",
-//            "That was fantastic!",
-//            "You did it!",
-//            "You are a superstar!",
-//            "Keep going, you are amazing!",
-//            "I love how you keep trying!",
-//            "You make learning look fun!"
         )
         val lines = buildList {
             leadIn?.let { add(it) }
@@ -127,15 +119,41 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
     }
 
     fun playSoftClick() {
-        tone.startTone(ToneGenerator.TONE_PROP_BEEP, 40)
+        try {
+            @Suppress("DEPRECATION")
+            audioManager.playSoundEffect(AudioManager.FX_KEY_CLICK)
+        } catch (_: Exception) {
+        }
+        try {
+            toneMusic.startTone(ToneGenerator.TONE_PROP_BEEP, 45)
+        } catch (_: Exception) {
+            try {
+                toneNotification.startTone(ToneGenerator.TONE_PROP_BEEP, 45)
+            } catch (_: Exception) {
+            }
+        }
     }
 
     fun playSuccess() {
-        tone.startTone(ToneGenerator.TONE_PROP_ACK, 180)
+        try {
+            toneMusic.startTone(ToneGenerator.TONE_PROP_ACK, 200)
+        } catch (_: Exception) {
+            try {
+                toneNotification.startTone(ToneGenerator.TONE_PROP_ACK, 200)
+            } catch (_: Exception) {
+            }
+        }
     }
 
     fun playTryAgain() {
-        tone.startTone(ToneGenerator.TONE_PROP_NACK, 220)
+        try {
+            toneMusic.startTone(ToneGenerator.TONE_PROP_NACK, 220)
+        } catch (_: Exception) {
+            try {
+                toneNotification.startTone(ToneGenerator.TONE_PROP_NACK, 220)
+            } catch (_: Exception) {
+            }
+        }
     }
 
     fun release() {
@@ -143,6 +161,7 @@ class AppAudio(context: Context) : TextToSpeech.OnInitListener {
         tts?.shutdown()
         tts = null
         ttsReady = false
-        tone.release()
+        toneMusic.release()
+        toneNotification.release()
     }
 }

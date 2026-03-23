@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -30,6 +31,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -74,9 +77,15 @@ private val RockColor = Color(0xFF6D4C41)
 private fun sessionRamp01(seconds: Float): Float =
     (seconds * 0.01f).coerceIn(0f, 1f)
 
+private val FallbackObstacleEmojis = listOf(
+    "🦁", "🐘", "🐕", "🐱", "🐻", "🐰", "🐸", "🐧", "🐯", "🐮",
+    "🐷", "🐵", "🐔", "🦆", "🐢", "🐍", "🦉", "🐴", "🦓", "🦒",
+)
+
 private fun pickRandomAnimal(pool: List<AnimalItem>): Pair<String, Color> {
-    val a = pool.randomOrNull() ?: return "🦁" to RockColor
-    return a.emoji to a.tint
+    val a = pool.randomOrNull()
+    if (a != null) return a.emoji to a.tint
+    return FallbackObstacleEmojis.random() to RockColor
 }
 
 @Suppress("UnusedBoxWithConstraintsScope")
@@ -89,12 +98,6 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
     var showLevelSettings by remember { mutableStateOf(false) }
     var sessionKey by remember { mutableIntStateOf(0) }
 
-    var animals by remember { mutableStateOf<List<AnimalItem>>(emptyList()) }
-    LaunchedEffect(Unit) {
-        animals = loadAnimalsFromAssets(context)
-    }
-    val animalsRef by rememberUpdatedState(animals)
-
     var playerLane by remember(sessionKey) { mutableIntStateOf(1) }
     val obstacles = remember(sessionKey) { mutableStateListOf<Obstacle>() }
     var gameOver by remember(sessionKey) { mutableStateOf(false) }
@@ -103,6 +106,7 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
     val playerLaneRef by rememberUpdatedState(playerLane)
 
     LaunchedEffect(sessionKey, gameLevel) {
+        val pool = withContext(Dispatchers.IO) { loadAnimalsFromAssets(context) }
         gameOver = false
         playerLane = 1
         obstacles.clear()
@@ -138,7 +142,7 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
 
                 spawnMsLeft -= dt * 1000f
                 if (spawnMsLeft <= 0f && obstacles.size < 8) {
-                    val (em, accent) = pickRandomAnimal(animalsRef)
+                    val (em, accent) = pickRandomAnimal(pool)
                     obstacles.add(Obstacle(Random.nextInt(0, 3), -0.14f, em, accent))
                     // 随局内 ramp 略缩短出障间隔（最多约加快 28%）
                     val spawnTight = 1f - 0.28f * ramp
@@ -186,6 +190,7 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .background(
                 Brush.verticalGradient(
                     listOf(Color(0xFFE1F5FE), Color(0xFFB3E5FC)),

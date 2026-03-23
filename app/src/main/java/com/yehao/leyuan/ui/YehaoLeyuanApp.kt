@@ -2,7 +2,7 @@ package com.yehao.leyuan.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.systemBarsPadding
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
@@ -20,11 +20,11 @@ import com.yehao.leyuan.update.AppUpdateOverlay
 fun YehaoLeyuanApp() {
     val navController = rememberNavController()
 
-    // enableEdgeToEdge()：为状态栏 + 三键/手势导航条预留内边距，避免底部按钮被挡住
+    // 沉浸式顶栏（状态栏透明，内容可铺到顶部）；仅避开底部导航条/手势区
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .systemBarsPadding(),
+            .navigationBarsPadding(),
     ) {
         NavHost(
             navController = navController,

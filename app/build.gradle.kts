@@ -19,14 +19,14 @@ android {
         applicationId = "com.yehao.leyuan"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1.0"
         ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("arm64-v8a"))
         }
         val base = (project.findProperty("UPDATE_BASE_URL") as? String)?.trim().orEmpty()
-        val updateBaseUrl = if (base.isEmpty()) "https://azhansy.github.io/yehao-leyuan/" else base
+        val updateBaseUrl = base.ifEmpty { "https://azhansy.github.io/yehao-leyuan/" }
         buildConfigField(
             "String",
             "UPDATE_BASE_URL",
