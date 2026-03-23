@@ -72,6 +72,26 @@ jobs:
             --arg apkFileName "${APK_BASENAME}.apk" \
             '{versionCode: $versionCode, versionName: $versionName, apkFileName: $apkFileName}' \
             > deploy/update.json
+          # Root URL requires index.html or GitHub Pages shows "File not found"
+          cat > deploy/index.html <<EOF
+          <!DOCTYPE html>
+          <html lang="zh-CN">
+          <head>
+            <meta charset="utf-8"/>
+            <meta name="viewport" content="width=device-width, initial-scale=1"/>
+            <title>烨浩乐园 · 更新</title>
+          </head>
+          <body>
+            <h1>烨浩乐园 · OTA</h1>
+            <p>当前构建：<strong>${VERSION_NAME}</strong>（versionCode ${VERSION_CODE}）</p>
+            <ul>
+              <li><a href="update.json">update.json</a>（应用拉取此文件检查更新）</li>
+              <li><a href="${APK_BASENAME}.apk">下载 APK</a></li>
+            </ul>
+          </body>
+          </html>
+          EOF
+          : > deploy/.nojekyll
           echo "Published metadata:"
           cat deploy/update.json
 
