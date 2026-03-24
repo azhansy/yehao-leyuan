@@ -24,8 +24,10 @@ import androidx.compose.material.icons.rounded.Category
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.MoreVert
 import androidx.compose.material.icons.rounded.LocalFlorist
+import androidx.compose.material.icons.rounded.RecordVoiceOver
 import androidx.compose.material.icons.rounded.Pets
 import androidx.compose.material.icons.rounded.Info
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material.icons.rounded.TextFields
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -81,6 +83,12 @@ private fun styleFor(dest: AppDestinations): SpotStyle = when (dest) {
         blurb = "点点植物听英文名",
         icon = Icons.Rounded.LocalFlorist,
         gradient = listOf(Color(0xFF43A047), Color(0xFF2E7D32)),
+    )
+    AppDestinations.FamilyEnglishRead -> SpotStyle(
+        emoji = "👨‍👩‍👧",
+        blurb = "填家人英文名，听朗读模版",
+        icon = Icons.Rounded.RecordVoiceOver,
+        gradient = listOf(Color(0xFF7E57C2), Color(0xFF5E35B1)),
     )
     AppDestinations.Shapes -> SpotStyle(
         emoji = "⭐",
@@ -189,7 +197,7 @@ fun GameMapHomeScreen(navController: NavController) {
                         ),
                     ) {
                         Icon(
-                            imageVector = Icons.Rounded.MoreVert,
+                            imageVector = Icons.Rounded.Settings,
                             contentDescription = "菜单",
                             modifier = Modifier.size(26.dp),
                         )

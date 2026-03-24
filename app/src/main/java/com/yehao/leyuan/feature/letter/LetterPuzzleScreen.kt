@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
@@ -25,16 +26,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Settings
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.key
 import androidx.compose.runtime.getValue
@@ -42,9 +48,11 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -55,7 +63,6 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
@@ -65,13 +72,39 @@ import com.yehao.leyuan.feature.animal.pickRandomPuzzleWord
 import com.yehao.leyuan.ui.LocalAppAudio
 import com.yehao.leyuan.ui.celebration.VictoryCelebrationOverlay
 import com.yehao.leyuan.ui.theme.CherryRed
+import com.yehao.leyuan.ui.theme.CreamBackground
 import com.yehao.leyuan.ui.theme.GrassGreen
 import com.yehao.leyuan.ui.theme.OrangePop
 import com.yehao.leyuan.ui.theme.PinkBubble
 import com.yehao.leyuan.ui.theme.SkyBlue
 import kotlin.math.roundToInt
 
+/**
+ * 字母拼图 — UI 对齐 Stitch 稿结构（线索区 / 作答条 / 字母池分层）。
+ * 参考：https://stitch.withgoogle.com/projects/13385921442945725597?node-id=135425461d06438294207d4f1f3abde6
+ */
 private val LetterColors = listOf(CherryRed, SkyBlue, GrassGreen, OrangePop, PinkBubble)
+
+/**
+ * 与同应用内「家庭成员英语」「地图首页」等一致的竖直渐变：奶油黄 → 浅水色 → 浅天蓝。
+ * （与家庭成员英语页、地图首页等使用的暖色→天蓝渐变同一思路。）
+ */
+private val LetterPuzzleBackgroundGradient = listOf(
+    CreamBackground,
+    Color(0xFFB2EBF2),
+    Color(0xFFE1F5FE),
+)
+
+/** Google Stitch / M3 常见导出：浅底、蓝强调、白卡片、作答条与字母池分区 */
+private val StitchInk = Color(0xFF202124)
+private val StitchMuted = Color(0xFF5F6368)
+private val StitchAccent = Color(0xFF1967D2)
+private val StitchCard = Color.White
+private val StitchSlotStrip = Color(0xFFE8F0FE)
+private val StitchSlotBorder = Color(0xFF669DF6)
+private val StitchSlotEmpty = Color.White
+private val StitchPoolSurface = Color(0xFFF1F3F4)
+private val StitchChipBg = Color.White.copy(alpha = 0.92f)
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalLayoutApi::class)
@@ -79,6 +112,12 @@ private val LetterColors = listOf(CherryRed, SkyBlue, GrassGreen, OrangePop, Pin
 fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
     val audio = LocalAppAudio.current
     val context = LocalContext.current
+
+    DisposableEffect(audio) {
+        onDispose {
+            audio.stopYoudaoPlayback()
+        }
+    }
     val prefs = remember { LetterPuzzlePrefs(context) }
     var gameLevel by remember { mutableIntStateOf(prefs.getLevel()) }
     val difficulty = remember(gameLevel) { difficultyForLevel(gameLevel) }
@@ -92,6 +131,8 @@ fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
     var lastRoundPoints by remember { mutableIntStateOf(0) }
 
     val latestRoundSolved by rememberUpdatedState(roundSolved)
+    val latestRoundKey by rememberUpdatedState(roundKey)
+    val scope = rememberCoroutineScope()
 
     val pick = remember(roundKey, gameLevel) {
         val d = difficultyForLevel(gameLevel)
@@ -151,18 +192,20 @@ fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
                 sessionScore += pts
                 wordsCleared++
                 showVictoryCelebration = true
-                audio.speakLettersThenWord(word)
-                audio.speakVictoryPraise(append = true)
+                val tokenRound = roundKey
+                val w = word
+                scope.launch {
+                    delay(1000)
+                    if (tokenRound != latestRoundKey || !latestRoundSolved) return@launch
+                    audio.speakLettersThenWord(w)
+                    audio.speakVictoryPraise(append = true)
+                }
             }
             return
         }
         dragIndex = null
         dragOffset = Offset.Zero
     }
-
-    val titleBrush = Brush.horizontalGradient(
-        listOf(CherryRed, OrangePop, SkyBlue, GrassGreen)
-    )
 
     fun restartSessionAfterGameOver() {
         showGameOver = false
@@ -181,276 +224,374 @@ fun LetterPuzzleScreen(onBack: () -> Unit = {}) {
         Box(
             Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        listOf(Color(0xFFFFFDE7), Color(0xFFE1F5FE)),
-                    ),
-                ),
+                .background(Brush.verticalGradient(LetterPuzzleBackgroundGradient)),
         )
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 20.dp, vertical = 10.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 4.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 IconButton(
                     onClick = {
                         audio.playSoftClick()
+                        audio.stopYoudaoPlayback()
                         onBack()
                     },
                     enabled = !showGameOver,
-                    modifier = Modifier.align(Alignment.CenterStart),
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.White.copy(alpha = 0.85f),
-                        contentColor = Color(0xFF37474F)
+                        containerColor = StitchCard,
+                        contentColor = StitchInk
                     )
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                         contentDescription = "返回",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(26.dp)
                     )
                 }
+                Text(
+                    text = "字母拼图",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = StitchInk,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f)
+                )
                 IconButton(
                     onClick = {
                         audio.playSoftClick()
                         showLevelSettings = true
                     },
                     enabled = !showGameOver,
-                    modifier = Modifier.align(Alignment.CenterStart).padding(start = 48.dp),
                     colors = IconButtonDefaults.iconButtonColors(
-                        containerColor = Color.White.copy(alpha = 0.85f),
-                        contentColor = Color(0xFF7E57C2)
+                        containerColor = StitchCard,
+                        contentColor = StitchAccent
                     )
                 ) {
                     Icon(
                         imageVector = Icons.Rounded.Settings,
                         contentDescription = "游戏等级",
-                        modifier = Modifier.size(28.dp)
+                        modifier = Modifier.size(26.dp)
                     )
                 }
-                Text(
-                    text = "拼出单词!",
-                    style = MaterialTheme.typography.displayLarge.merge(
-                        TextStyle(brush = titleBrush, fontWeight = FontWeight.ExtraBold)
-                    ),
-                    fontSize = 42.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier
-                        .align(Alignment.Center)
-                        .padding(start = 100.dp, end = 16.dp)
-                )
             }
             Text(
                 text = "第 ${gameLevel} 级 · ${difficulty.summaryZh}",
                 fontSize = 13.sp,
-                color = Color(0xFF78909C),
+                color = StitchMuted,
                 textAlign = TextAlign.Center,
-                modifier = Modifier.padding(bottom = 6.dp)
+                modifier = Modifier.padding(top = 2.dp, bottom = 10.dp)
             )
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 4.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                    .padding(vertical = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = "⏱ ${timeLeftSec}s",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = if (timeLeftSec <= 5) Color(0xFFE53935) else Color(0xFF00897B)
-                )
-                Text(
-                    text = "得分 $sessionScore",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF6A1B9A)
-                )
-                Text(
-                    text = "已对 $wordsCleared 词",
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF546E7A)
-                )
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = StitchChipBg,
+                    shadowElevation = 1.dp
+                ) {
+                    Text(
+                        text = "⏱ ${timeLeftSec}s",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = if (timeLeftSec <= 5) Color(0xFFD93025) else Color(0xFF137333)
+                    )
+                }
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = StitchChipBg,
+                    shadowElevation = 1.dp
+                ) {
+                    Text(
+                        text = "得分 $sessionScore",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = StitchAccent
+                    )
+                }
+                Surface(
+                    shape = RoundedCornerShape(12.dp),
+                    color = StitchChipBg,
+                    shadowElevation = 1.dp
+                ) {
+                    Text(
+                        text = "已对 $wordsCleared 词",
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = StitchMuted
+                    )
+                }
             }
 
-            Text(
-                text = pick.emoji,
-                fontSize = 88.sp,
-                modifier = Modifier
-                    .padding(vertical = 4.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null,
-                        enabled = !showGameOver
-                    ) {
-                        audio.playSoftClick()
-                        audio.speakAnimal(word)
-                    }
-            )
-            Text(
-                text = word.lowercase(),
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color(0xFF1565C0),
-                fontWeight = FontWeight.Bold
-            )
-            if (pick.chinese.isNotBlank()) {
-                Text(
-                    text = pick.chinese,
-                    fontSize = 16.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color(0xFF78909C),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(top = 4.dp, start = 24.dp, end = 24.dp)
-                )
-            }
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .horizontalScroll(rememberScrollState()),
-                verticalAlignment = Alignment.CenterVertically
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = StitchCard),
+                elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
             ) {
-                for (i in letters.indices) {
-                    val c = letters[i]
-                    key("slot_${roundKey}_${i}_$c") {
-                        val filled = placed[i] && placedChar[i] != null
-                        val scale by animateFloatAsState(
-                            targetValue = if (filled) 1.08f else 1f,
-                            animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
-                            label = "slot"
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 18.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = "看一看，拼一拼",
+                        style = MaterialTheme.typography.labelLarge,
+                        color = StitchMuted,
+                        fontWeight = FontWeight.Medium
+                    )
+                    Text(
+                        text = pick.emoji,
+                        fontSize = 96.sp,
+                        modifier = Modifier
+                            .padding(top = 6.dp, bottom = 4.dp)
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                enabled = !showGameOver
+                            ) {
+                                audio.playSoftClick()
+                                audio.speakAnimal(word)
+                            }
+                    )
+                    if (pick.chinese.isNotBlank()) {
+                        Text(
+                            text = pick.chinese,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = StitchInk,
+                            textAlign = TextAlign.Center
                         )
-                        Box(
-                            modifier = Modifier
-                                .size((72 * scale).dp)
-                                .onGloballyPositioned { coords ->
-                                    val p = coords.positionInRoot()
-                                    val s = coords.size
-                                    slotRects[i] = Rect(
-                                        p.x,
-                                        p.y,
-                                        p.x + s.width,
-                                        p.y + s.height
-                                    )
-                                }
-                                .background(
-                                    if (filled) Color(0xFFC8E6C9) else Color.White.copy(alpha = 0.9f),
-                                    RoundedCornerShape(16.dp)
+                    }
+                    Text(
+                        text = word.lowercase(),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = StitchAccent,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 6.dp)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Text(
+                text = "把字母拖进横条里",
+                style = MaterialTheme.typography.labelMedium,
+                color = StitchMuted,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 8.dp),
+                textAlign = TextAlign.Center
+            )
+
+            Surface(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(20.dp),
+                color = StitchSlotStrip,
+                shadowElevation = 2.dp
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(10.dp, Alignment.CenterHorizontally),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .horizontalScroll(rememberScrollState())
+                        .padding(horizontal = 14.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    for (i in letters.indices) {
+                        val c = letters[i]
+                        key("slot_${roundKey}_${i}_$c") {
+                            val filled = placed[i] && placedChar[i] != null
+                            val scale by animateFloatAsState(
+                                targetValue = if (filled) 1.06f else 1f,
+                                animationSpec = spring(stiffness = Spring.StiffnessMediumLow),
+                                label = "slot"
+                            )
+                            Card(
+                                modifier = Modifier
+                                    .size((74 * scale).dp)
+                                    .onGloballyPositioned { coords ->
+                                        val p = coords.positionInRoot()
+                                        val s = coords.size
+                                        slotRects[i] = Rect(
+                                            p.x,
+                                            p.y,
+                                            p.x + s.width,
+                                            p.y + s.height
+                                        )
+                                    },
+                                shape = RoundedCornerShape(16.dp),
+                                colors = CardDefaults.cardColors(
+                                    containerColor = if (filled) Color(0xFFC6F6D5) else StitchSlotEmpty
                                 ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            if (filled) {
-                                Text(
-                                    text = "${placedChar[i]}",
-                                    fontSize = 36.sp,
-                                    fontWeight = FontWeight.Black,
-                                    color = Color(0xFF2E7D32)
+                                border = BorderStroke(
+                                    width = 2.dp,
+                                    color = if (filled) Color(0xFF137333) else StitchSlotBorder
+                                ),
+                                elevation = CardDefaults.cardElevation(
+                                    defaultElevation = if (filled) 3.dp else 1.dp
                                 )
-                            } else {
-                                Text(
-                                    text = "?",
-                                    fontSize = 28.sp,
-                                    color = Color(0xFFB0BEC5)
-                                )
+                            ) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (filled) {
+                                        Text(
+                                            text = "${placedChar[i]}",
+                                            fontSize = 34.sp,
+                                            fontWeight = FontWeight.Black,
+                                            color = Color(0xFF0D652D)
+                                        )
+                                    } else {
+                                        Text(
+                                            text = "_",
+                                            fontSize = 26.sp,
+                                            color = StitchSlotBorder.copy(alpha = 0.45f),
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
                             }
                         }
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+            Spacer(modifier = Modifier.height(10.dp))
 
-            Text(
-                text = "拖动下面的字母到方框里",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF546E7A)
-            )
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            BoxWithConstraints(
+            Surface(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1f),
+                shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
+                color = StitchPoolSurface,
+                tonalElevation = 1.dp,
+                shadowElevation = 4.dp
             ) {
-                val minSide = kotlin.math.min(maxWidth.value, maxHeight.value)
-
-                FlowRow(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.TopCenter)
-                        .padding(top = 8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp, Alignment.CenterHorizontally),
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
+                        .fillMaxSize()
+                        .padding(start = 16.dp, top = 14.dp, end = 16.dp, bottom = 12.dp)
                 ) {
-                    for (letterIndex in poolIndices) {
-                        val char = letters[letterIndex]
-                        key("pool_${roundKey}_${letterIndex}_$char") {
-                            val isPlaced = placed[letterIndex] && placedChar[letterIndex] == char
-                            if (isPlaced) {
-                                Spacer(modifier = Modifier.size(72.dp))
-                            } else {
-                                val isDragging = dragIndex == letterIndex
-                                val dragModifier = if (isDragging) {
-                                    Modifier
-                                        .offset {
-                                            IntOffset(dragOffset.x.roundToInt(), dragOffset.y.roundToInt())
-                                        }
-                                        .onGloballyPositioned { coords ->
-                                            val p = coords.positionInRoot()
-                                            val s = coords.size
-                                            dragRectInRoot = Rect(p.x, p.y, p.x + s.width, p.y + s.height)
-                                        }
-                                } else Modifier
-
-                                Box(
-                                    modifier = dragModifier
-                                        .size(72.dp)
-                                        .pointerInput(letterIndex, word, roundKey, placed[letterIndex], showGameOver) {
-                                            if (showGameOver || placed[letterIndex]) return@pointerInput
-                                            detectDragGestures(
-                                                onDragStart = {
-                                                    dragIndex = letterIndex
-                                                    dragOffset = Offset.Zero
-                                                    audio.playSoftClick()
-                                                    audio.speakDraggingLetter(char)
-                                                },
-                                                onDrag = { change, amount ->
-                                                    change.consume()
-                                                    dragOffset += amount
-                                                },
-                                                onDragEnd = {
-                                                    trySnap(char, letterIndex)
-                                                },
-                                                onDragCancel = {
-                                                    dragIndex = null
-                                                    dragOffset = Offset.Zero
+                    Text(
+                        text = "👆 按住下面的圆字母，拖到横条空格中",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = StitchMuted,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(bottom = 14.dp),
+                        textAlign = TextAlign.Center,
+                        lineHeight = 20.sp
+                    )
+                    BoxWithConstraints(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                    ) {
+                        val minSide = kotlin.math.min(maxWidth.value, maxHeight.value)
+                        FlowRow(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterHorizontally),
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            for (letterIndex in poolIndices) {
+                                val char = letters[letterIndex]
+                                key("pool_${roundKey}_${letterIndex}_$char") {
+                                    val isPlaced = placed[letterIndex] && placedChar[letterIndex] == char
+                                    if (isPlaced) {
+                                        Spacer(modifier = Modifier.size(72.dp))
+                                    } else {
+                                        val isDragging = dragIndex == letterIndex
+                                        val dragModifier = if (isDragging) {
+                                            Modifier
+                                                .offset {
+                                                    IntOffset(
+                                                        dragOffset.x.roundToInt(),
+                                                        dragOffset.y.roundToInt()
+                                                    )
                                                 }
-                                            )
+                                                .onGloballyPositioned { coords ->
+                                                    val p = coords.positionInRoot()
+                                                    val s = coords.size
+                                                    dragRectInRoot = Rect(
+                                                        p.x,
+                                                        p.y,
+                                                        p.x + s.width,
+                                                        p.y + s.height
+                                                    )
+                                                }
+                                        } else Modifier
+
+                                        Card(
+                                            modifier = dragModifier
+                                                .size(72.dp)
+                                                .pointerInput(
+                                                    letterIndex,
+                                                    word,
+                                                    roundKey,
+                                                    placed[letterIndex],
+                                                    showGameOver
+                                                ) {
+                                                    if (showGameOver || placed[letterIndex]) return@pointerInput
+                                                    detectDragGestures(
+                                                        onDragStart = {
+                                                            dragIndex = letterIndex
+                                                            dragOffset = Offset.Zero
+                                                            audio.playSoftClick()
+                                                            audio.speakDraggingLetter(char)
+                                                        },
+                                                        onDrag = { change, amount ->
+                                                            change.consume()
+                                                            dragOffset += amount
+                                                        },
+                                                        onDragEnd = {
+                                                            trySnap(char, letterIndex)
+                                                        },
+                                                        onDragCancel = {
+                                                            dragIndex = null
+                                                            dragOffset = Offset.Zero
+                                                        }
+                                                    )
+                                                },
+                                            shape = CircleShape,
+                                            colors = CardDefaults.cardColors(
+                                                containerColor = LetterColors[letterIndex % LetterColors.size]
+                                            ),
+                                            elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                                        ) {
+                                            Box(
+                                                modifier = Modifier.fillMaxSize(),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Text(
+                                                    text = "$char",
+                                                    color = Color.White,
+                                                    fontSize = (minSide * 0.12f).coerceIn(28f, 40f).sp,
+                                                    fontWeight = FontWeight.Black
+                                                )
+                                            }
                                         }
-                                        .background(
-                                            LetterColors[letterIndex % LetterColors.size],
-                                            RoundedCornerShape(18.dp)
-                                        ),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        text = "$char",
-                                        color = Color.White,
-                                        fontSize = (minSide * 0.12f).coerceIn(28f, 40f).sp,
-                                        fontWeight = FontWeight.Black
-                                    )
+                                    }
                                 }
                             }
                         }

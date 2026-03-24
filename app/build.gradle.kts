@@ -19,8 +19,8 @@ android {
         applicationId = "com.yehao.leyuan"
         minSdk = 26
         targetSdk = 35
-        versionCode = 5
-        versionName = "1.1.3"
+        versionCode = 6
+        versionName = "1.1.4"
         ndk {
             abiFilters.clear()
             abiFilters.addAll(listOf("arm64-v8a"))
@@ -103,6 +103,8 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended")
     implementation("androidx.navigation:navigation-compose:2.8.4")
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
+    /** 中文姓名转拼音，供有道英文发音朗读（Maven Central 发布名为 io.github.biezhi） */
+    implementation("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
 
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")

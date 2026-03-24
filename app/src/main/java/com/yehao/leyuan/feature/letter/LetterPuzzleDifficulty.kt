@@ -26,17 +26,17 @@ fun difficultyForLevel(level: Int): LetterPuzzleDifficulty {
         1, 3, 5, 7 -> false
         else -> true
     }
-    // 以 1 级 10 秒为基准，高级略紧（由原 45→20 档按比例压缩）
+    // 以 1 级 20 秒为基准，等级越高限时略紧
     val timeLimitSeconds = when (lv) {
-        1 -> 10
-        2 -> 9
-        3 -> 8
-        4 -> 8
-        5 -> 7
-        6 -> 6
-        7 -> 6
-        8 -> 5
-        else -> 4
+        1 -> 20
+        2 -> 19
+        3 -> 18
+        4 -> 18
+        5 -> 17
+        6 -> 16
+        7 -> 16
+        8 -> 15
+        else -> 14
     }
     val summaryZh = buildString {
         append("最多${maxLetters}个字母")

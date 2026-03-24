@@ -15,9 +15,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Switch
+import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,9 +35,12 @@ import androidx.compose.ui.window.Dialog
 @Composable
 fun RaceLevelSettingsDialog(
     currentLevel: Int,
+    playSteerTts: Boolean,
+    onPlaySteerTtsChange: (Boolean) -> Unit,
     onDismiss: () -> Unit,
     onSelectLevel: (Int) -> Unit,
 ) {
+    var steerTts by remember(playSteerTts) { mutableStateOf(playSteerTts) }
     Dialog(onDismissRequest = onDismiss) {
         Card(
             modifier = Modifier
@@ -58,6 +67,40 @@ fun RaceLevelSettingsDialog(
                     color = Color(0xFF607D8B),
                     modifier = Modifier.padding(top = 4.dp, bottom = 12.dp),
                 )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp)
+                        .background(Color.White.copy(alpha = 0.75f), RoundedCornerShape(14.dp))
+                        .padding(horizontal = 14.dp, vertical = 10.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "点左/右时朗读",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                            color = Color(0xFF263238),
+                        )
+                        Text(
+                            text = "默认关闭；开启后点左/右会读 Left / Right，仍保留轻触声",
+                            fontSize = 13.sp,
+                            color = Color(0xFF78909C),
+                            modifier = Modifier.padding(top = 2.dp),
+                        )
+                    }
+                    Switch(
+                        checked = steerTts,
+                        onCheckedChange = {
+                            steerTts = it
+                            onPlaySteerTtsChange(it)
+                        },
+                        colors = SwitchDefaults.colors(
+                            checkedThumbColor = Color(0xFF0277BD),
+                            checkedTrackColor = Color(0xFF81D4FA),
+                        ),
+                    )
+                }
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

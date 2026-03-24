@@ -10,6 +10,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.yehao.leyuan.feature.animal.AnimalIdentificationScreen
 import com.yehao.leyuan.feature.animal.PlantGardenScreen
+import com.yehao.leyuan.feature.family.FamilyEnglishReadScreen
 import com.yehao.leyuan.feature.letter.LetterPuzzleScreen
 import com.yehao.leyuan.feature.math.SimpleMathScreen
 import com.yehao.leyuan.feature.race.LaneDodgeScreen
@@ -43,6 +44,9 @@ fun YehaoLeyuanApp() {
             }
             composable(AppDestinations.Plants.route) {
                 PlantGardenScreen(onBack = { navController.popBackStack() })
+            }
+            composable(AppDestinations.FamilyEnglishRead.route) {
+                FamilyEnglishReadScreen(onBack = { navController.popBackStack() })
             }
             composable(AppDestinations.Shapes.route) {
                 ShapeMatchingScreen(onBack = { navController.popBackStack() })

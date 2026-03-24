@@ -27,6 +27,7 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -64,6 +65,12 @@ fun VocabularyIdentificationContent(
     val audio = LocalAppAudio.current
     var pressedIndex by remember(items) { mutableIntStateOf(-1) }
 
+    DisposableEffect(audio) {
+        onDispose {
+            audio.stopYoudaoPlayback()
+        }
+    }
+
     LaunchedEffect(pressedIndex) {
         if (pressedIndex >= 0) {
             delay(280)
@@ -91,6 +98,7 @@ fun VocabularyIdentificationContent(
                 IconButton(
                     onClick = {
                         audio.playSoftClick()
+                        audio.stopYoudaoPlayback()
                         onBack()
                     },
                     modifier = Modifier.align(Alignment.CenterStart),
