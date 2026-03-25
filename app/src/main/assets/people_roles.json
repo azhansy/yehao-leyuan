@@ -1,0 +1,614 @@
+[
+  {
+    "emoji": "👨",
+    "english": "Father",
+    "chinese": "爸爸",
+    "tint": "#FF5C6BC0"
+  },
+  {
+    "emoji": "👩",
+    "english": "Mother",
+    "chinese": "妈妈",
+    "tint": "#FFEC407A"
+  },
+  {
+    "emoji": "👴",
+    "english": "Grandpa",
+    "chinese": "爷爷",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "👵",
+    "english": "Grandma",
+    "chinese": "奶奶",
+    "tint": "#FFFF8A65"
+  },
+  {
+    "emoji": "🧑‍🏫",
+    "english": "Teacher",
+    "chinese": "老师",
+    "tint": "#FF42A5F5"
+  },
+  {
+    "emoji": "🧑‍⚕️",
+    "english": "Doctor",
+    "chinese": "医生",
+    "tint": "#FF26A69A"
+  },
+  {
+    "emoji": "👩‍⚕️",
+    "english": "Nurse",
+    "chinese": "护士",
+    "tint": "#FFAB47BC"
+  },
+  {
+    "emoji": "👮",
+    "english": "Police",
+    "chinese": "警察",
+    "tint": "#FF1E88E5"
+  },
+  {
+    "emoji": "👮‍♀️",
+    "english": "Policewoman",
+    "chinese": "女警察",
+    "tint": "#FF3949AB"
+  },
+  {
+    "emoji": "🧑‍🚒",
+    "english": "Fireman",
+    "chinese": "消防员",
+    "tint": "#FFE53935"
+  },
+  {
+    "emoji": "👨‍🍳",
+    "english": "Cook",
+    "chinese": "厨师",
+    "tint": "#FFFF7043"
+  },
+  {
+    "emoji": "🧑‍🌾",
+    "english": "Farmer",
+    "chinese": "农民",
+    "tint": "#FF7CB342"
+  },
+  {
+    "emoji": "🧑‍🎓",
+    "english": "Student",
+    "chinese": "学生",
+    "tint": "#FF5C6BC0"
+  },
+  {
+    "emoji": "👶",
+    "english": "Baby",
+    "chinese": "宝宝",
+    "tint": "#FFFFB74D"
+  },
+  {
+    "emoji": "👦",
+    "english": "Boy",
+    "chinese": "男孩",
+    "tint": "#FF29B6F6"
+  },
+  {
+    "emoji": "👧",
+    "english": "Girl",
+    "chinese": "女孩",
+    "tint": "#FFF06292"
+  },
+  {
+    "emoji": "👦",
+    "english": "Brother",
+    "chinese": "兄弟",
+    "tint": "#FF039BE5"
+  },
+  {
+    "emoji": "👧",
+    "english": "Sister",
+    "chinese": "姐妹",
+    "tint": "#FFEC407A"
+  },
+  {
+    "emoji": "🧔",
+    "english": "Uncle",
+    "chinese": "叔叔",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "👩",
+    "english": "Aunt",
+    "chinese": "阿姨",
+    "tint": "#FFBA68C8"
+  },
+  {
+    "emoji": "👷",
+    "english": "Worker",
+    "chinese": "工人",
+    "tint": "#FFFFA726"
+  },
+  {
+    "emoji": "🧑‍🎤",
+    "english": "Singer",
+    "chinese": "歌手",
+    "tint": "#FFE91E63"
+  },
+  {
+    "emoji": "🧑‍🎨",
+    "english": "Artist",
+    "chinese": "画家",
+    "tint": "#FF8E24AA"
+  },
+  {
+    "emoji": "🧑‍✈️",
+    "english": "Pilot",
+    "chinese": "飞行员",
+    "tint": "#FF1E88E5"
+  },
+  {
+    "emoji": "👨‍💼",
+    "english": "Father",
+    "chinese": "父亲",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "👩‍💼",
+    "english": "Mother",
+    "chinese": "母亲",
+    "tint": "#FFAD1457"
+  },
+  {
+    "emoji": "🧑‍💻",
+    "english": "Engineer",
+    "chinese": "工程师",
+    "tint": "#FF00897B"
+  },
+  {
+    "emoji": "👨‍🔧",
+    "english": "Mechanic",
+    "chinese": "修理工",
+    "tint": "#FF5D4037"
+  },
+  {
+    "emoji": "👩‍🍳",
+    "english": "Chef",
+    "chinese": "女厨师",
+    "tint": "#FFD84315"
+  },
+  {
+    "emoji": "🕵️",
+    "english": "Detective",
+    "chinese": "侦探",
+    "tint": "#FF455A64"
+  },
+  {
+    "emoji": "👨‍🌾",
+    "english": "Gardener",
+    "chinese": "园丁",
+    "tint": "#FF558B2F"
+  },
+  {
+    "emoji": "👩‍🏫",
+    "english": "Mentor",
+    "chinese": "女老师",
+    "tint": "#FF1976D2"
+  },
+  {
+    "emoji": "🤱",
+    "english": "Parent",
+    "chinese": "父母",
+    "tint": "#FFF48FB1"
+  },
+  {
+    "emoji": "👨‍👩‍👧",
+    "english": "Family",
+    "chinese": "一家人",
+    "tint": "#FF7E57C2"
+  },
+  {
+    "emoji": "👴",
+    "english": "Granddad",
+    "chinese": "外公",
+    "tint": "#FF795548"
+  },
+  {
+    "emoji": "👵",
+    "english": "Granny",
+    "chinese": "外婆",
+    "tint": "#FFFFAB91"
+  },
+  {
+    "emoji": "🚕",
+    "english": "Taxi",
+    "chinese": "出租车",
+    "tint": "#FFFFEB3B"
+  },
+  {
+    "emoji": "🚗",
+    "english": "Car",
+    "chinese": "小汽车",
+    "tint": "#FF42A5F5"
+  },
+  {
+    "emoji": "🚌",
+    "english": "Bus",
+    "chinese": "公交车",
+    "tint": "#FFFF9800"
+  },
+  {
+    "emoji": "🚇",
+    "english": "Subway",
+    "chinese": "地铁",
+    "tint": "#FF1E88E5"
+  },
+  {
+    "emoji": "🚆",
+    "english": "Train",
+    "chinese": "火车",
+    "tint": "#FF5C6BC0"
+  },
+  {
+    "emoji": "✈️",
+    "english": "Plane",
+    "chinese": "飞机",
+    "tint": "#FF29B6F6"
+  },
+  {
+    "emoji": "🚢",
+    "english": "Ship",
+    "chinese": "轮船",
+    "tint": "#FF00897B"
+  },
+  {
+    "emoji": "🚲",
+    "english": "Bike",
+    "chinese": "自行车",
+    "tint": "#FF66BB6A"
+  },
+  {
+    "emoji": "🛵",
+    "english": "Scooter",
+    "chinese": "小摩托",
+    "tint": "#FF78909C"
+  },
+  {
+    "emoji": "🚑",
+    "english": "Ambulance",
+    "chinese": "救护车",
+    "tint": "#FFE53935"
+  },
+  {
+    "emoji": "🚒",
+    "english": "Fire truck",
+    "chinese": "消防车",
+    "tint": "#FFD32F2F"
+  },
+  {
+    "emoji": "👨‍✈️",
+    "english": "Captain",
+    "chinese": "机长",
+    "tint": "#FF1565C0"
+  },
+  {
+    "emoji": "👨‍🚀",
+    "english": "Astronaut",
+    "chinese": "宇航员",
+    "tint": "#FF5E35B1"
+  },
+  {
+    "emoji": "🦷",
+    "english": "Dentist",
+    "chinese": "牙医",
+    "tint": "#FF80DEEA"
+  },
+  {
+    "emoji": "🐕‍🦺",
+    "english": "Vet",
+    "chinese": "兽医",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "📮",
+    "english": "Postman",
+    "chinese": "邮递员",
+    "tint": "#FF795548"
+  },
+  {
+    "emoji": "🧹",
+    "english": "Cleaner",
+    "chinese": "清洁工",
+    "tint": "#FF90A4AE"
+  },
+  {
+    "emoji": "🥖",
+    "english": "Baker",
+    "chinese": "面包师",
+    "tint": "#FFFFCC80"
+  },
+  {
+    "emoji": "🍽️",
+    "english": "Waiter",
+    "chinese": "服务员",
+    "tint": "#FFFF7043"
+  },
+  {
+    "emoji": "💇",
+    "english": "Barber",
+    "chinese": "理发师",
+    "tint": "#FFAB47BC"
+  },
+  {
+    "emoji": "📰",
+    "english": "Reporter",
+    "chinese": "记者",
+    "tint": "#FF546E7A"
+  },
+  {
+    "emoji": "⚽",
+    "english": "Coach",
+    "chinese": "教练",
+    "tint": "#FF43A047"
+  },
+  {
+    "emoji": "📚",
+    "english": "Librarian",
+    "chinese": "图书管理员",
+    "tint": "#FF5C6BC0"
+  },
+  {
+    "emoji": "🏫",
+    "english": "Principal",
+    "chinese": "校长",
+    "tint": "#FF3949AB"
+  },
+  {
+    "emoji": "🪚",
+    "english": "Carpenter",
+    "chinese": "木匠",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🎖️",
+    "english": "Soldier",
+    "chinese": "军人",
+    "tint": "#FF558B2F"
+  },
+  {
+    "emoji": "⚓",
+    "english": "Sailor",
+    "chinese": "水手",
+    "tint": "#FF0277BD"
+  },
+  {
+    "emoji": "👑",
+    "english": "King",
+    "chinese": "国王",
+    "tint": "#FFFFD54F"
+  },
+  {
+    "emoji": "👸",
+    "english": "Queen",
+    "chinese": "王后",
+    "tint": "#FFE91E63"
+  },
+  {
+    "emoji": "🤴",
+    "english": "Prince",
+    "chinese": "王子",
+    "tint": "#FF7E57C2"
+  },
+  {
+    "emoji": "👸",
+    "english": "Princess",
+    "chinese": "公主",
+    "tint": "#FFF48FB1"
+  },
+  {
+    "emoji": "🤝",
+    "english": "Friend",
+    "chinese": "朋友",
+    "tint": "#FF26A69A"
+  },
+  {
+    "emoji": "🏠",
+    "english": "Neighbor",
+    "chinese": "邻居",
+    "tint": "#FF8D6E63"
+  },
+  {
+    "emoji": "👨‍👦",
+    "english": "Son",
+    "chinese": "儿子",
+    "tint": "#FF1E88E5"
+  },
+  {
+    "emoji": "👩‍👧",
+    "english": "Daughter",
+    "chinese": "女儿",
+    "tint": "#FFEC407A"
+  },
+  {
+    "emoji": "👨",
+    "english": "Husband",
+    "chinese": "丈夫",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "👩",
+    "english": "Wife",
+    "chinese": "妻子",
+    "tint": "#FFC2185B"
+  },
+  {
+    "emoji": "👦",
+    "english": "Grandson",
+    "chinese": "孙子",
+    "tint": "#FF039BE5"
+  },
+  {
+    "emoji": "👧",
+    "english": "Granddaughter",
+    "chinese": "孙女",
+    "tint": "#FFF06292"
+  },
+  {
+    "emoji": "🧒",
+    "english": "Cousin",
+    "chinese": "堂表兄弟姐妹",
+    "tint": "#FF7CB342"
+  },
+  {
+    "emoji": "👨‍🍼",
+    "english": "Dad",
+    "chinese": "奶爸",
+    "tint": "#FF5C6BC0"
+  },
+  {
+    "emoji": "👩‍🍼",
+    "english": "Mom",
+    "chinese": "宝妈",
+    "tint": "#FFF48FB1"
+  },
+  {
+    "emoji": "🧓",
+    "english": "Elder",
+    "chinese": "老人",
+    "tint": "#FF9E9E9E"
+  },
+  {
+    "emoji": "👲",
+    "english": "Vendor",
+    "chinese": "小贩",
+    "tint": "#FFFFA726"
+  },
+  {
+    "emoji": "🤵",
+    "english": "Groom",
+    "chinese": "新郎",
+    "tint": "#FF263238"
+  },
+  {
+    "emoji": "👰",
+    "english": "Bride",
+    "chinese": "新娘",
+    "tint": "#FFFCE4EC"
+  },
+  {
+    "emoji": "🧑‍🦯",
+    "english": "Helper",
+    "chinese": "好心人",
+    "tint": "#FF78909C"
+  },
+  {
+    "emoji": "🚓",
+    "english": "Police car",
+    "chinese": "警车",
+    "tint": "#FF1E88E5"
+  },
+  {
+    "emoji": "🚛",
+    "english": "Truck",
+    "chinese": "卡车",
+    "tint": "#FF6D4C41"
+  },
+  {
+    "emoji": "🚜",
+    "english": "Tractor",
+    "chinese": "拖拉机",
+    "tint": "#FF827717"
+  },
+  {
+    "emoji": "🛺",
+    "english": "Rickshaw",
+    "chinese": "三轮车",
+    "tint": "#FFFF7043"
+  },
+  {
+    "emoji": "🎓",
+    "english": "Graduate",
+    "chinese": "毕业生",
+    "tint": "#FF3949AB"
+  },
+  {
+    "emoji": "👨‍⚖️",
+    "english": "Judge",
+    "chinese": "法官",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "👩‍⚖️",
+    "english": "Lawyer",
+    "chinese": "律师",
+    "tint": "#FF5E35B1"
+  },
+  {
+    "emoji": "💼",
+    "english": "Boss",
+    "chinese": "老板",
+    "tint": "#FF455A64"
+  },
+  {
+    "emoji": "🧑‍🏭",
+    "english": "Factory worker",
+    "chinese": "工人",
+    "tint": "#FFFFA726"
+  },
+  {
+    "emoji": "👨‍🔬",
+    "english": "Scientist",
+    "chinese": "科学家",
+    "tint": "#FF00897B"
+  },
+  {
+    "emoji": "👩‍🔬",
+    "english": "Chemist",
+    "chinese": "化学家",
+    "tint": "#FF7B1FA2"
+  },
+  {
+    "emoji": "🎬",
+    "english": "Director",
+    "chinese": "导演",
+    "tint": "#FFD84315"
+  },
+  {
+    "emoji": "📷",
+    "english": "Photographer",
+    "chinese": "摄影师",
+    "tint": "#FF37474F"
+  },
+  {
+    "emoji": "🏃",
+    "english": "Runner",
+    "chinese": "跑步的人",
+    "tint": "#FFE64A19"
+  },
+  {
+    "emoji": "🏊",
+    "english": "Swimmer",
+    "chinese": "游泳的人",
+    "tint": "#FF039BE5"
+  },
+  {
+    "emoji": "👨‍🦽",
+    "english": "Patient",
+    "chinese": "病人",
+    "tint": "#FF78909C"
+  },
+  {
+    "emoji": "🍼",
+    "english": "Baby",
+    "chinese": "小婴儿",
+    "tint": "#FFFFB74D"
+  },
+  {
+    "emoji": "👮‍♂️",
+    "english": "Officer",
+    "chinese": "男警察",
+    "tint": "#FF0D47A1"
+  },
+  {
+    "emoji": "🧑‍🍼",
+    "english": "Parent",
+    "chinese": "家长",
+    "tint": "#FF9575CD"
+  }
+]

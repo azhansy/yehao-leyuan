@@ -9,34 +9,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import com.yehao.leyuan.ui.theme.GrassGreen
 import com.yehao.leyuan.ui.theme.SkyBlue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 @Composable
-fun PlantGardenScreen(onBack: () -> Unit = {}) {
+fun PeopleRolesScreen(onBack: () -> Unit = {}) {
     val context = LocalContext.current
-    var plants by remember { mutableStateOf<List<AnimalItem>>(emptyList()) }
+    var items by remember { mutableStateOf<List<AnimalItem>>(emptyList()) }
 
     LaunchedEffect(Unit) {
-        plants = withContext(Dispatchers.IO) { loadPlantsFromAssets(context) }
+        items = withContext(Dispatchers.IO) { loadPeopleRolesFromAssets(context) }
     }
 
     val titleBrush = Brush.linearGradient(
-        listOf(Color(0xFF2E7D32), GrassGreen, SkyBlue, Color(0xFF00ACC1)),
+        listOf(Color(0xFF3949AB), Color(0xFF5C6BC0), SkyBlue, Color(0xFF00838F)),
     )
 
     VocabularyIdentificationContent(
-        title = "植物园",
-        subtitle = "点一点，听英文名字",
-        items = plants,
-        emptyMessage = "正在加载植物…\n若一直为空，请检查 assets/plants.json",
+        title = "职业与称呼",
+        subtitle = "家人、老师、医生、警察…点一点听英文",
+        items = items,
+        emptyMessage = "正在加载…\n若一直为空，请检查 assets/people_roles.json",
         onBack = onBack,
-        backgroundGradient = listOf(Color(0xFFE8F5E9), Color(0xFFE0F7FA)),
+        backgroundGradient = listOf(Color(0xFFE8EAF6), Color(0xFFE0F7FA)),
         titleBrush = titleBrush,
-        subtitleColor = Color(0xFF1B5E20),
-        backIconTint = Color(0xFF2E7D32),
+        subtitleColor = Color(0xFF283593),
+        backIconTint = Color(0xFF3949AB),
         backContainerColor = Color.White.copy(alpha = 0.9f),
     )
 }

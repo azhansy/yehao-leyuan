@@ -15,7 +15,7 @@ data class AnimalItem(
 )
 
 private const val ASSET_ANIMALS = "animals.json"
-private const val ASSET_PLANTS = "plants.json"
+private const val ASSET_PEOPLE_ROLES = "people_roles.json"
 
 /** Load emoji + english + optional chinese + tint from a JSON array asset. */
 fun loadEmojiEnglishAsset(context: Context, assetFileName: String): List<AnimalItem> {
@@ -50,8 +50,9 @@ fun loadEmojiEnglishAsset(context: Context, assetFileName: String): List<AnimalI
 fun loadAnimalsFromAssets(context: Context): List<AnimalItem> =
     loadEmojiEnglishAsset(context, ASSET_ANIMALS)
 
-fun loadPlantsFromAssets(context: Context): List<AnimalItem> =
-    loadEmojiEnglishAsset(context, ASSET_PLANTS)
+/** 职业与人物称呼（家人、老师、医生、警察等），原植物园词库已替换 */
+fun loadPeopleRolesFromAssets(context: Context): List<AnimalItem> =
+    loadEmojiEnglishAsset(context, ASSET_PEOPLE_ROLES)
 
 data class PuzzleWordPick(
     val emoji: String,
@@ -69,7 +70,7 @@ fun pickRandomPuzzleWord(
     random: Random = Random.Default,
     maxLetters: Int = 8
 ): PuzzleWordPick {
-    val merged = loadAnimalsFromAssets(context) + loadPlantsFromAssets(context)
+    val merged = loadAnimalsFromAssets(context) + loadPeopleRolesFromAssets(context)
     val candidates = merged.mapNotNull { item ->
         val lettersOnly = item.english.filter { it.isLetter() }
         if (lettersOnly.length in 2..maxLetters) {

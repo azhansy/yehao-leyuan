@@ -314,8 +314,7 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
             audio.playSuccess()
             readAnswerForTts(guess)
             audio.speakVictoryPraise(
-                append = true,
-                leadIn = "That's the right answer! You counted so well! Great math!",
+                append = true
             )
         } else {
             feedback = "再试一次"

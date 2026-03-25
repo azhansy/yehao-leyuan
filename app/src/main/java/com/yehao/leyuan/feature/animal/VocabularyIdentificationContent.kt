@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.sp
 import com.yehao.leyuan.ui.LocalAppAudio
 
 /**
- * 动物王国 / 植物园共用的瀑布流：emoji + 英文名 + 中文，点击朗读。
+ * 动物王国 / 职业与称呼共用的瀑布流：emoji + 英文名 + 中文，点击朗读。
  */
 @Composable
 fun VocabularyIdentificationContent(

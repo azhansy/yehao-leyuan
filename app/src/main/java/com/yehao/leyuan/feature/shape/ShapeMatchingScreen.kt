@@ -31,8 +31,8 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.key
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -64,10 +64,10 @@ import com.yehao.leyuan.ui.theme.CherryRed
 import com.yehao.leyuan.ui.theme.GrassGreen
 import com.yehao.leyuan.ui.theme.OrangePop
 import com.yehao.leyuan.ui.theme.SkyBlue
+import kotlinx.coroutines.launch
 import kotlin.math.cos
 import kotlin.math.roundToInt
 import kotlin.math.sin
-import kotlinx.coroutines.launch
 
 private enum class ShapeKind(val labelEn: String, val labelZh: String) {
     Circle("Circle", "圆形"),
@@ -117,8 +117,7 @@ fun ShapeMatchingScreen(onBack: () -> Unit = {}) {
             if (matched.all { it }) {
                 showVictoryCelebration = true
                 audio.speakVictoryPraise(
-                    append = false,
-                    leadIn = "You matched every shape! So smart! Well done!"
+                    append = false
                 )
             }
             return
@@ -222,7 +221,11 @@ fun ShapeMatchingScreen(onBack: () -> Unit = {}) {
                                     ),
                                 contentAlignment = Alignment.Center
                             ) {
-                                ShapeOutline(kind = kind, modifier = Modifier.size(56.dp), alpha = if (done) 1f else 0.45f)
+                                ShapeOutline(
+                                    kind = kind,
+                                    modifier = Modifier.size(56.dp),
+                                    alpha = if (done) 1f else 0.45f
+                                )
                             }
                             Text(
                                 text = kind.labelZh,
@@ -260,12 +263,16 @@ fun ShapeMatchingScreen(onBack: () -> Unit = {}) {
                                 val dragMod = if (isDragging) {
                                     Modifier
                                         .offset {
-                                            IntOffset(dragOffset.x.roundToInt(), dragOffset.y.roundToInt())
+                                            IntOffset(
+                                                dragOffset.x.roundToInt(),
+                                                dragOffset.y.roundToInt()
+                                            )
                                         }
                                         .onGloballyPositioned { coords ->
                                             val p = coords.positionInRoot()
                                             val s = coords.size
-                                            dragRectInRoot = Rect(p.x, p.y, p.x + s.width, p.y + s.height)
+                                            dragRectInRoot =
+                                                Rect(p.x, p.y, p.x + s.width, p.y + s.height)
                                         }
                                 } else Modifier
 
@@ -327,8 +334,19 @@ private fun ShapeOutline(kind: ShapeKind, modifier: Modifier, alpha: Float) {
     val color = Color(0xFF37474F).copy(alpha = alpha)
     Canvas(modifier = modifier) {
         when (kind) {
-            ShapeKind.Circle -> drawCircle(color = color, style = stroke, radius = size.minDimension / 2f - 4f)
-            ShapeKind.Square -> drawRect(color = color, style = stroke, topLeft = Offset(4f, 4f), size = Size(size.width - 8f, size.height - 8f))
+            ShapeKind.Circle -> drawCircle(
+                color = color,
+                style = stroke,
+                radius = size.minDimension / 2f - 4f
+            )
+
+            ShapeKind.Square -> drawRect(
+                color = color,
+                style = stroke,
+                topLeft = Offset(4f, 4f),
+                size = Size(size.width - 8f, size.height - 8f)
+            )
+
             ShapeKind.Triangle -> {
                 val p = Path().apply {
                     moveTo(size.width / 2f, 6f)
@@ -338,6 +356,7 @@ private fun ShapeOutline(kind: ShapeKind, modifier: Modifier, alpha: Float) {
                 }
                 drawPath(p, color = color, style = stroke)
             }
+
             ShapeKind.Star -> drawPath(starPath(size), color = color, style = stroke)
         }
     }
@@ -357,11 +376,13 @@ private fun ShapeFilled(kind: ShapeKind, modifier: Modifier) {
                 .clip(CircleShape)
                 .background(fill)
         )
+
         ShapeKind.Square -> Box(
             modifier = modifier
                 .clip(RoundedCornerShape(14.dp))
                 .background(fill)
         )
+
         ShapeKind.Triangle -> Canvas(modifier = modifier) {
             val p = Path().apply {
                 moveTo(size.width / 2f, 4f)
@@ -371,6 +392,7 @@ private fun ShapeFilled(kind: ShapeKind, modifier: Modifier) {
             }
             drawPath(p, color = fill)
         }
+
         ShapeKind.Star -> Canvas(modifier = modifier) {
             drawPath(starPath(size), color = fill)
         }

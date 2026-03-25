@@ -63,7 +63,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import com.yehao.leyuan.feature.animal.AnimalItem
 import com.yehao.leyuan.feature.animal.loadAnimalsFromAssets
-import com.yehao.leyuan.feature.animal.loadPlantsFromAssets
+import com.yehao.leyuan.feature.animal.loadPeopleRolesFromAssets
 import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.TextUnit
@@ -96,7 +96,7 @@ private val DefaultRaceTheme = AnimalItem(
 )
 
 private fun loadRaceVocabularyPool(context: Context): List<AnimalItem> =
-    loadAnimalsFromAssets(context) + loadPlantsFromAssets(context)
+    loadAnimalsFromAssets(context) + loadPeopleRolesFromAssets(context)
 
 private fun emojiTextStyle(fontSize: TextUnit) = TextStyle(
     fontSize = fontSize,

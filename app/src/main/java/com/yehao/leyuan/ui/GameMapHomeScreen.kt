@@ -21,9 +21,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Calculate
 import androidx.compose.material.icons.rounded.Category
+import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.DirectionsCar
 import androidx.compose.material.icons.rounded.MoreVert
-import androidx.compose.material.icons.rounded.LocalFlorist
+import androidx.compose.material.icons.rounded.Groups
 import androidx.compose.material.icons.rounded.RecordVoiceOver
 import androidx.compose.material.icons.rounded.Pets
 import androidx.compose.material.icons.rounded.Info
@@ -78,11 +79,11 @@ private fun styleFor(dest: AppDestinations): SpotStyle = when (dest) {
         icon = Icons.Rounded.Pets,
         gradient = listOf(Color(0xFF66BB6A), Color(0xFF43A047)),
     )
-    AppDestinations.Plants -> SpotStyle(
-        emoji = "🌿",
-        blurb = "点点植物听英文名",
-        icon = Icons.Rounded.LocalFlorist,
-        gradient = listOf(Color(0xFF43A047), Color(0xFF2E7D32)),
+    AppDestinations.PeopleRoles -> SpotStyle(
+        emoji = "👨‍👩‍👧",
+        blurb = "家人职业称呼，点听英文",
+        icon = Icons.Rounded.Groups,
+        gradient = listOf(Color(0xFF5C6BC0), Color(0xFF3949AB)),
     )
     AppDestinations.FamilyEnglishRead -> SpotStyle(
         emoji = "👨‍👩‍👧",
@@ -96,6 +97,12 @@ private fun styleFor(dest: AppDestinations): SpotStyle = when (dest) {
         icon = Icons.Rounded.Category,
         gradient = listOf(Color(0xFFAB47BC), Color(0xFF8E24AA)),
     )
+    AppDestinations.AnimalJigsaw -> SpotStyle(
+        emoji = "🧩",
+        blurb = "动物剪影拼一拼，1～9 级",
+        icon = Icons.Rounded.GridView,
+        gradient = listOf(Color(0xFFFF8A65), Color(0xFFFF5722)),
+    )
     AppDestinations.Math -> SpotStyle(
         emoji = "🔢",
         blurb = "简单加减算一算",
@@ -107,6 +114,12 @@ private fun styleFor(dest: AppDestinations): SpotStyle = when (dest) {
         blurb = "三车道躲小动物，越久越快",
         icon = Icons.Rounded.DirectionsCar,
         gradient = listOf(Color(0xFFFFB74D), Color(0xFFFF9800)),
+    )
+    AppDestinations.DinoRun -> SpotStyle(
+        emoji = "🦖",
+        blurb = "横屏跑跑跳，学词继续",
+        icon = Icons.Rounded.Pets,
+        gradient = listOf(Color(0xFF66BB6A), Color(0xFF2E7D32)),
     )
     else -> SpotStyle("🎮", "", Icons.Rounded.TextFields, listOf(SkyBlue, SkyBlue))
 }

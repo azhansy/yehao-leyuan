@@ -729,6 +729,31 @@ class AppAudio(context: Context) {
         }
     }
 
+    /** 恐龙跳跃：短促两声模拟「嗷」感，不阻塞 */
+    fun playDinoJump() {
+        try {
+            toneMusic.startTone(ToneGenerator.TONE_DTMF_1, 55)
+        } catch (_: Exception) {
+            try {
+                toneNotification.startTone(ToneGenerator.TONE_DTMF_1, 55)
+            } catch (_: Exception) {
+            }
+        }
+        mainHandler.postDelayed(
+            {
+                try {
+                    toneMusic.startTone(ToneGenerator.TONE_DTMF_3, 85)
+                } catch (_: Exception) {
+                    try {
+                        toneNotification.startTone(ToneGenerator.TONE_DTMF_3, 85)
+                    } catch (_: Exception) {
+                    }
+                }
+            },
+            50L,
+        )
+    }
+
     fun release() {
         youdaoPlaySession.incrementAndGet()
         mainHandler.removeCallbacksAndMessages(null)

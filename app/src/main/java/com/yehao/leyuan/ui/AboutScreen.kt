@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.OpenInNew
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -145,7 +146,7 @@ fun AboutScreen(onBack: () -> Unit) {
                             modifier = Modifier.weight(1f),
                         )
                         Icon(
-                            imageVector = Icons.Rounded.OpenInNew,
+                            imageVector = Icons.AutoMirrored.Rounded.OpenInNew,
                             contentDescription = null,
                             tint = Color(0xFF1565C0),
                             modifier = Modifier
