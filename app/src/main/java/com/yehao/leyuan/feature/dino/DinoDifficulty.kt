@@ -30,9 +30,9 @@ fun dinoDifficultyForLevel(level: Int, screenWidth: Float, screenHeight: Float):
     val gravity = 1900f + (lv - 1) * 65f
     // 与 DinoRunScreen 生成逻辑一致：最高约 6% 屏高（spawn 上限 0.0425+0.0175）
     val tallestObstacle = h * (0.055f + (lv - 1) * 0.001f).coerceAtMost(h * 0.063f)
-    val peakMargin = h * 0.028f + 18f
-    // 略抬高跳跃顶点，配合更高天空区与完整恐龙显示
-    val targetPeak = (tallestObstacle + peakMargin) * 1.32f
+    val peakMargin = h * 0.032f + 22f
+    // 略抬高跳跃顶点，配合更高天空区与完整恐龙显示；系数略大让用户跳得更高一点
+    val targetPeak = (tallestObstacle + peakMargin) * 3.48f
     val jumpV = -sqrt(2f * gravity * targetPeak)
     val summary = when (lv) {
         in 1..2 -> "最慢、障碍很远"

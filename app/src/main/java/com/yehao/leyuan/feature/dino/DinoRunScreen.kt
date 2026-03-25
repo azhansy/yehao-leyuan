@@ -48,6 +48,7 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.withFrameMillis
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -64,6 +65,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Density
+import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
@@ -76,13 +80,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.withContext
 import kotlin.math.abs
-import kotlin.math.max
-import kotlin.math.min
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-/** 障碍：长颈龙、翼手类等近似 */
-private val OBSTACLE_DINO_EMOJIS = listOf("🦕", "🦅", "🦎", "🐊", "🦇", "🦕")
+/** 障碍：仅用恐龙类 emoji（Unicode 标准里主要是蜥脚类 🦕、暴龙 🦖） */
+private val OBSTACLE_DINO_EMOJIS = listOf("🦕", "🦖",  "🦅","🦎","🐊","🦇")
 
 private fun randomObstacleDinoEmoji(): String = OBSTACLE_DINO_EMOJIS.random()
 
@@ -95,6 +97,9 @@ private data class Obstacle(
 )
 
 private fun gapLerp(min: Float, max: Float, t: Float): Float = min + (max - min) * t
+
+/** 与盒子/layout 用的 px→dp 一致，再按 fontScale 转成 sp，避免把 px 数值误当 sp。 */
+private fun Density.dpToSp(dp: Dp): TextUnit = (dp.value / fontScale).sp
 
 /** 地面线（屏高比例）。原 0.76 时沙地带约 24%H；减半后约 12%H。 */
 private const val GROUND_Y_FRACTION = 0.88f
@@ -176,12 +181,17 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
         val dinoDrawH = dinoH * 1.42f
         val footX = dinoX + dinoW * 0.5f
 
-        fun tryJump() {
-            if (showLessonOverlay) return
-            if (dinoFeetY < groundY - 10f) return
+        // pointerInput 的 key 不含 gameLevel 时，切换难度会沿用旧闭包，groundY/diff 过期导致误判「在空中」无法起跳
+        val onTapJump: () -> Unit = lambda@{
+            if (showLessonOverlay) return@lambda
+            if (!dinoFeetY.isFinite() || dinoFeetY <= 0f || dinoFeetY > groundY) {
+                dinoFeetY = groundY
+            }
+            if (dinoFeetY < groundY - 10f) return@lambda
             dinoVy = diff.jumpVelocity
-            audio.playDinoJump()
+            audio.speak("jump", append = true)
         }
+        val latestOnTapJump by rememberUpdatedState(newValue = onTapJump)
 
         fun continueAfterLesson() {
             showLessonOverlay = false
@@ -284,7 +294,7 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
                             val oMidX = o.x + o.w * 0.5f
                             val oHalfW = o.w * 0.5f
                             val xHit = abs(footX - oMidX) <= oHalfW
-                            val yHit = footY >= oTop && footY <= oBottom
+                            val yHit = footY in oTop..oBottom
                             if (xHit && yHit) {
                                 showLessonOverlay = true
                                 overlayLesson = vocabPool.randomOrNull()
@@ -303,8 +313,8 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
             modifier = Modifier
                 .fillMaxSize()
                 .graphicsLayer { clip = false }
-                .pointerInput(showLessonOverlay, groundY) {
-                    detectTapGestures(onTap = { tryJump() })
+                .pointerInput(Unit) {
+                    detectTapGestures(onTap = { latestOnTapJump() })
                 },
         ) {
             Canvas(
@@ -424,8 +434,15 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
                 val oDrawH = o.h * 2.2f
                 val oVisualW = maxOf(o.w, o.h * 1.4f, W * 0.078f)
                 val visualLeft = o.x + o.w * 0.5f - oVisualW * 0.5f
-                val glyphSp = min(oDrawH, oVisualW) * 0.9f
                 val oBoxH = oDrawH + sandBleedBelow
+                val obstacleFontSize = with(density) {
+                    val rawDp = minOf(oDrawH.toDp(), oVisualW.toDp()) * 0.9f
+                    val clampedDp = rawDp.coerceIn(44.sp.toDp(), 102.sp.toDp())
+                    dpToSp(clampedDp)
+                }
+                val obstacleLineHeight = with(density) {
+                    dpToSp(obstacleFontSize.toDp() * 1.22f)
+                }
                 Box(
                     modifier = Modifier
                         .zIndex(2f)
@@ -440,7 +457,8 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
                 ) {
                     Text(
                         text = o.emoji,
-                        fontSize = glyphSp.coerceIn(44f, 102f).sp,
+                        fontSize = obstacleFontSize,
+                        lineHeight = obstacleLineHeight,
                         textAlign = TextAlign.Center,
                         modifier = Modifier
                             .fillMaxWidth()
@@ -468,9 +486,18 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
                     .graphicsLayer { clip = false },
                 contentAlignment = Alignment.BottomCenter,
             ) {
+                val playerFontSize = with(density) {
+                    val rawDp = dinoDrawH.toDp() * 0.78f
+                    val clampedDp = rawDp.coerceIn(56.sp.toDp(), 112.sp.toDp())
+                    dpToSp(clampedDp)
+                }
+                val playerLineHeight = with(density) {
+                    dpToSp(playerFontSize.toDp() * 1.22f)
+                }
                 Text(
                     text = "🦖",
-                    fontSize = (dinoDrawH * 0.78f).coerceIn(56f, 112f).sp,
+                    fontSize = playerFontSize,
+                    lineHeight = playerLineHeight,
                     modifier = Modifier
                         .padding(bottom = with(density) { sandBleedBelow.toDp() })
                         .graphicsLayer { scaleX = -1f },
