@@ -45,6 +45,8 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInRoot
@@ -103,6 +105,21 @@ private val MathLevels = listOf(
     MathLevelInfo(8, "等级 8", "乘除 · 进阶"),
     MathLevelInfo(9, "等级 9", "四则混合"),
 )
+
+private val DigitCardGradients = listOf(
+    listOf(Color(0xFFFF8A65), Color(0xFFFFD54F)),
+    listOf(Color(0xFF4FC3F7), Color(0xFF81C784)),
+    listOf(Color(0xFFBA68C8), Color(0xFFF06292)),
+    listOf(Color(0xFF64B5F6), Color(0xFF4DD0E1)),
+    listOf(Color(0xFFFFB74D), Color(0xFFFF8A65)),
+    listOf(Color(0xFF81C784), Color(0xFFAED581)),
+    listOf(Color(0xFF7986CB), Color(0xFF9575CD)),
+    listOf(Color(0xFFFF8A80), Color(0xFFFFB74D)),
+    listOf(Color(0xFF4DB6AC), Color(0xFF64B5F6)),
+    listOf(Color(0xFFF48FB1), Color(0xFFCE93D8)),
+)
+
+private val DigitCardTilt = listOf(-6f, -3f, -7f, -2f, -5f, 4f, 2f, 6f, 3f, 7f)
 
 /** 等级 ≥2 时答案可能出现 10，需要十位 + 个位两个框 */
 private fun needsTwoAnswerSlots(level: Int): Boolean = level >= 2
@@ -537,10 +554,13 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
                                     }
                                     .background(
                                         Brush.linearGradient(
-                                            listOf(SkyBlue, GrassGreen),
+                                            DigitCardGradients[digit],
                                         ),
                                         RoundedCornerShape(16.dp),
-                                    ),
+                                    )
+                                    .graphicsLayer {
+                                        rotationZ = if (dragging) 0f else DigitCardTilt[digit]
+                                    },
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(
@@ -548,6 +568,17 @@ fun SimpleMathScreen(onBack: () -> Unit = {}) {
                                     color = Color.White,
                                     fontSize = 28.sp,
                                     fontWeight = FontWeight.Black,
+                                    style = TextStyle(
+                                        shadow = Shadow(
+                                            color = Color(0xFF000000).copy(alpha = 0.25f),
+                                            offset = Offset(0f, 3f),
+                                            blurRadius = 4f,
+                                        ),
+                                    ),
+                                    modifier = Modifier
+                                        .offset(y = (-1).dp)
+                                        .background(Color.White.copy(alpha = 0.16f), RoundedCornerShape(10.dp))
+                                        .padding(horizontal = 8.dp, vertical = 2.dp),
                                 )
                             }
                         }

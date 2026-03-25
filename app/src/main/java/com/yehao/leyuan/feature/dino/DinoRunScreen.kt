@@ -88,6 +88,23 @@ private val OBSTACLE_DINO_EMOJIS = listOf("🦕", "🦖",  "🦅","🦎","🐊",
 
 private fun randomObstacleDinoEmoji(): String = OBSTACLE_DINO_EMOJIS.random()
 
+private fun shortVerticalSegmentsOverlap(
+    aCenterX: Float,
+    aBottomY: Float,
+    aHeight: Float,
+    aWidth: Float,
+    bCenterX: Float,
+    bBottomY: Float,
+    bHeight: Float,
+    bWidth: Float,
+): Boolean {
+    val xHit = abs(aCenterX - bCenterX) <= (aWidth + bWidth) * 0.5f
+    val aTop = aBottomY - aHeight
+    val bTop = bBottomY - bHeight
+    val yHit = aTop <= bBottomY && bTop <= aBottomY
+    return xHit && yHit
+}
+
 private data class Obstacle(
     val x: Float,
     val w: Float,
@@ -287,15 +304,29 @@ fun DinoRunScreen(onBack: () -> Unit = {}) {
                     score += kotlin.math.max(1, (diff.scrollSpeedPx * dt * 0.15f).roundToInt())
 
                     if (!inv) {
-                        val footY = dinoFeetY
+                        val playerSegCenterX = footX
+                        val playerSegBottomY = dinoFeetY
+                        val playerSegHeight = dinoDrawH * 0.5f
+                        val playerSegWidth = dinoW * 0.28f
                         for (o in obstacles) {
-                            val oTop = groundY - o.h - obstacleLiftPx
-                            val oBottom = groundY - obstacleLiftPx
-                            val oMidX = o.x + o.w * 0.5f
-                            val oHalfW = o.w * 0.5f
-                            val xHit = abs(footX - oMidX) <= oHalfW
-                            val yHit = footY in oTop..oBottom
-                            if (xHit && yHit) {
+                            val obstacleDrawH = o.h * 2.2f
+                            val obstacleVisualW = maxOf(o.w, o.h * 1.4f, W * 0.078f)
+                            val obstacleSegCenterX = o.x + o.w * 0.5f
+                            val obstacleSegBottomY = groundY - obstacleLiftPx
+                            val obstacleSegHeight = obstacleDrawH * 0.5f
+                            val obstacleSegWidth = maxOf(obstacleVisualW * 0.3f, W * 0.02f)
+                            if (
+                                shortVerticalSegmentsOverlap(
+                                    aCenterX = playerSegCenterX,
+                                    aBottomY = playerSegBottomY,
+                                    aHeight = playerSegHeight,
+                                    aWidth = playerSegWidth,
+                                    bCenterX = obstacleSegCenterX,
+                                    bBottomY = obstacleSegBottomY,
+                                    bHeight = obstacleSegHeight,
+                                    bWidth = obstacleSegWidth,
+                                )
+                            ) {
                                 showLessonOverlay = true
                                 overlayLesson = vocabPool.randomOrNull()
                                 audio.playTryAgain()

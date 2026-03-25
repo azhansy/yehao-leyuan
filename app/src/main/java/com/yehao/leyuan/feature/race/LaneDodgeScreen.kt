@@ -84,6 +84,13 @@ private data class Obstacle(
 
 private val RoadDark = Color(0xFF37474F)
 private val RoadStripe = Color(0xFFECEFF1)
+private val RainbowLaneColors = listOf(
+    Color(0xFFFF5252),
+    Color(0xFFFFB300),
+    Color(0xFF66BB6A),
+    Color(0xFF29B6F6),
+    Color(0xFF7E57C2),
+)
 private val CarBody = Color(0xFFE53935)
 private val CarWindow = Color(0xFF90CAF9)
 private val RockColor = Color(0xFF6D4C41)
@@ -257,7 +264,8 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
                         crashed = true
                         gameOver = true
                         audio.playTryAgain()
-                        audio.speak("Watch out, try again")
+                        //挑战失败
+                        audio.speak("Challenge failed, try again")
                         prefs.updateHighScore(score)
                         return@withFrameMillis
                     }
@@ -297,70 +305,77 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding(),
+                .statusBarsPadding()
+                .padding(horizontal = 8.dp, vertical = 6.dp),
         ) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 8.dp),
-        ) {
-            IconButton(
-                onClick = {
-                    audio.playSoftClick()
-                    onBack()
-                },
-                modifier = Modifier.align(Alignment.CenterStart),
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = Color(0xFF37474F),
-                ),
-            ) {
-                Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "返回")
-            }
-            IconButton(
-                onClick = { showLevelSettings = true },
-                modifier = Modifier.align(Alignment.CenterStart).padding(start = 48.dp),
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = Color(0xFF0277BD),
-                ),
-            ) {
-                Icon(Icons.Rounded.Settings, contentDescription = "等级设置")
-            }
-            Text(
-                text = "赛车躲避",
+            Row(
                 modifier = Modifier
-                    .align(Alignment.Center)
-                    .padding(horizontal = 100.dp),
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color(0xFF01579B),
+                    .fillMaxWidth()
+                    .padding(horizontal = 0.dp, vertical = 2.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                IconButton(
+                    onClick = {
+                        audio.playSoftClick()
+                        onBack()
+                    },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.White.copy(alpha = 0.92f),
+                        contentColor = Color(0xFFC62828),
+                    ),
+                ) {
+                    Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "返回")
+                }
+                Text(
+                    text = "🏎️ 赛车躲避",
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Black,
+                    color = Color(0xFF01579B),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                    textAlign = TextAlign.Center,
+                )
+                IconButton(
+                    onClick = { showLevelSettings = true },
+                    colors = IconButtonDefaults.iconButtonColors(
+                        containerColor = Color.White.copy(alpha = 0.92f),
+                        contentColor = Color(0xFF0277BD),
+                    ),
+                ) {
+                    Icon(Icons.Rounded.Settings, contentDescription = "等级设置")
+                }
+            }
+
+            Text(
+                text = "得分 $score　最高 ${prefs.getHighScore()}　·　第 ${gameLevel} 级",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                fontSize = 15.sp,
+                color = Color(0xFF455A64),
                 textAlign = TextAlign.Center,
             )
-        }
-
-        Text(
-            text = "得分 $score　最高 ${prefs.getHighScore()}　·　第 ${gameLevel} 级",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-            fontSize = 15.sp,
-            color = Color(0xFF455A64),
-            textAlign = TextAlign.Center,
-        )
-        Text(
-            text = "点自己的赛车，听上面的英文单词",
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 0.dp),
-            fontSize = 12.sp,
-            color = Color(0xFF78909C),
-            textAlign = TextAlign.Center,
-        )
+            Text(
+                text = "点自己的赛车，听上面的英文单词",
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp, vertical = 0.dp),
+                fontSize = 12.sp,
+                color = Color(0xFF78909C),
+                textAlign = TextAlign.Center,
+            )
 
         BoxWithConstraints(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .clip(RoundedCornerShape(24.dp))
+                .background(
+                    Brush.verticalGradient(
+                        listOf(Color(0xFF455A64), RoadDark, Color(0xFF1C313A)),
+                    ),
+                ),
         ) {
             val density = LocalDensity.current
             val w = constraints.maxWidth.toFloat()
@@ -375,29 +390,64 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
             val carWdp = with(density) { carW.toDp() }
             val carHdp = with(density) { carHpx.toDp() }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(RoadDark, RoundedCornerShape(20.dp)),
-            ) {
+            Box(modifier = Modifier.fillMaxSize()) {
                 Row(
                     Modifier
                         .fillMaxSize()
-                        .padding(horizontal = 10.dp, vertical = 12.dp),
+                        .padding(horizontal = 12.dp, vertical = 14.dp),
                 ) {
                     repeat(3) { laneIndex ->
-                        Box(Modifier.weight(1f).fillMaxHeight())
+                        val laneColors = listOf(
+                            RainbowLaneColors[0],
+                            RainbowLaneColors[2],
+                            RainbowLaneColors[4],
+                        )
+                        Box(
+                            Modifier
+                                .weight(1f)
+                                .fillMaxHeight()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(
+                                    Brush.verticalGradient(
+                                        listOf(
+                                            laneColors[laneIndex].copy(alpha = 0.54f),
+                                            laneColors[laneIndex].copy(alpha = 0.30f),
+                                            laneColors[laneIndex].copy(alpha = 0.5f),
+                                        ),
+                                    ),
+                                ),
+                        )
                         if (laneIndex < 2) {
                             Box(
                                 Modifier
                                     .fillMaxHeight()
-                                    .width(4.dp)
-                                    .padding(vertical = 4.dp)
-                                    .background(RoadStripe, RoundedCornerShape(2.dp)),
+                                    .width(6.dp)
+                                    .padding(vertical = 6.dp)
+                                    .background(
+                                        Brush.verticalGradient(
+                                            listOf(
+                                                RoadStripe.copy(alpha = 0.4f),
+                                                RoadStripe,
+                                                RoadStripe.copy(alpha = 0.4f),
+                                            ),
+                                        ),
+                                        RoundedCornerShape(3.dp),
+                                    ),
                             )
                         }
                     }
                 }
+
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .fillMaxWidth(0.84f)
+                        .height(9.dp)
+                        .background(
+                            Brush.horizontalGradient(RainbowLaneColors),
+                            RoundedCornerShape(bottomStart = 9.dp, bottomEnd = 9.dp),
+                        ),
+                )
 
                 for (o in obstacles) {
                     val ox = laneW * o.lane + laneW * 0.18f
@@ -532,28 +582,29 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 4.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             Button(
                 onClick = { moveLeft() },
                 modifier = Modifier
                     .weight(1f)
-                    .height(56.dp),
+                    .height(60.dp),
                 enabled = !gameOver,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF0288D1),
+                    containerColor = Color(0xFF1E88E5),
                     disabledContainerColor = Color(0xFFB0BEC5),
                 ),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(20.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             ) {
                 Icon(Icons.Rounded.ChevronLeft, contentDescription = "左 Left")
                 Spacer(Modifier.size(8.dp))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("左", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text("左", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Text(
                         "Left",
-                        fontSize = 13.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White.copy(alpha = 0.92f),
                     )
@@ -563,19 +614,20 @@ fun LaneDodgeScreen(onBack: () -> Unit = {}) {
                 onClick = { moveRight() },
                 modifier = Modifier
                     .weight(1f)
-                    .height(56.dp),
+                    .height(60.dp),
                 enabled = !gameOver,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0xFF0288D1),
+                    containerColor = Color(0xFF1E88E5),
                     disabledContainerColor = Color(0xFFB0BEC5),
                 ),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(20.dp),
+                elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text("右", fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                    Text("右", fontSize = 18.sp, fontWeight = FontWeight.Bold)
                     Text(
                         "Right",
-                        fontSize = 13.sp,
+                        fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
                         color = Color.White.copy(alpha = 0.92f),
                     )
